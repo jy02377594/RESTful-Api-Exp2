@@ -33,7 +33,7 @@ namespace RESTful_Api_Exp2.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
         }
-
+        //测试git
         [HttpGet]
         //查询参数，当需要对数据进行各种条件查询时需要参数，以后如果需要查询的参数多了，不需要改这里的代码，只用在CompanyDtoParameters类里添加就行了
         //不指定来源是query的话会被apicontroller默认为是来自于请求的Body里，所以这里要注明不然返回415错误
