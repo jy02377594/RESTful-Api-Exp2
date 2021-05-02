@@ -52,7 +52,7 @@ namespace RESTful_Api_Exp2.Services
         {
             if (companyId == Guid.Empty)
             {
-                throw new ArgumentNullException(nameof(entity));
+                throw new ArgumentNullException(nameof(companyId));
             }
             if (entity == null)
             {

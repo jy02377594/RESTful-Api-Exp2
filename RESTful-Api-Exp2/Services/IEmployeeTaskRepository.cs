@@ -16,6 +16,7 @@ namespace RESTful_Api_Exp2.Services
         Task<EmployeeTask> GetOneTaskAsync(string TaskName);
         Task<EmployeeTask> GetOneTaskAsync(Guid taskId);
         void AddTask(EmployeeTask task);
+        void AddTask(Guid employeeId, EmployeeTask task);
         void UpdateTask(EmployeeTask task);
         void DeleteTask(EmployeeTask task);
 

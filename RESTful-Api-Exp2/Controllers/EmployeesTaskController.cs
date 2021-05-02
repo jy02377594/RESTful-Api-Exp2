@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RESTful_Api_Exp2.Entities;
 using RESTful_Api_Exp2.Models;
 using RESTful_Api_Exp2.Services;
 using System;
@@ -57,7 +58,7 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok(employeeTaskDtos);
         }
 
-        [HttpGet(template: "{taskId}")]
+        [HttpGet(template: "{taskId}", Name = nameof(GetTaskByTaskId))]
         public async Task<ActionResult<EmployeeTaskDto>> GetTaskByTaskId(Guid taskId)
         {
             var employeeTask = await _employeeTaskRepository.GetOneTaskAsync(taskId);
@@ -77,6 +78,24 @@ namespace RESTful_Api_Exp2.Controllers
             var employeeTaskDtos = _mapper.Map<IEnumerable<EmployeeTaskDto>>(employeeTasks);
 
             return Ok(employeeTaskDtos);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<EmployeeDto>> CreateNewTaskForEmployee(Guid employeeId, [FromBody]EmployeeTaskAddDto employeeTask)
+        {
+            if (employeeId == Guid.Empty) return NotFound();
+            var entity = _mapper.Map<EmployeeTask>(employeeTask);
+
+            _employeeTaskRepository.AddTask(employeeId,entity);
+            await _employeeTaskRepository.SaveAsync();
+
+            var employeeTaskDto = _mapper.Map<EmployeeTaskDto>(entity);
+
+            return CreatedAtRoute(nameof(GetTaskByTaskId), routeValues: new
+            {
+                employeeId = employeeId,
+                taskId = employeeTaskDto.taskId
+            }, value: employeeTaskDto);
         }
     }
 }

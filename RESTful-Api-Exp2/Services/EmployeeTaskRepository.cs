@@ -62,6 +62,15 @@ namespace RESTful_Api_Exp2.Services
 
             return await _context.EmployeeTasks.FirstOrDefaultAsync(x => x.TaskName == TaskName);
         }
+
+        public void AddTask(Guid employeeId, EmployeeTask task)
+        {
+            if (employeeId == Guid.Empty) throw new ArgumentNullException(nameof(employeeId));
+            if (task == null) throw new ArgumentNullException(nameof(task));
+
+            task.EmployeeId = employeeId;
+            _context.EmployeeTasks.Add(task);
+        }
         public void AddTask(EmployeeTask task)
         {
             if (task == null)
