@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RESTful_Api_Exp2.Entities;
 using RESTful_Api_Exp2.Models;
 using RESTful_Api_Exp2.Services;
 using System;
@@ -104,7 +105,7 @@ namespace RESTful_Api_Exp2.Controllers
 
         //[HttpHead], head跟get的区别就是不传响应的body
         [HttpGet]
-        [Route(template: "company/{companyId}")]
+        [Route(template: "company/{companyId}", Name = nameof(GetEmployeesForCompany))]
         //gender没有来自route，所以只能来自query,用来过滤, (Name = "gender") 可以不加，加了代表请求的时候指定query参数名, q表示搜索，查询
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId,[FromQuery(Name = "gender")] string genderDisplay, string q)
         {
@@ -115,5 +116,25 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok(employessDtos);
         }
 
+        //直接加companyId会和上面的[HttpGet(template: "{employeeId}")]冲突
+        //[HttpPost(template:"{companyId}")]
+        [HttpPost(template: "company/{companyId}")]
+        public async Task<ActionResult<EmployeeDto>> CreateEmployeeForCompany(Guid companyId, EmployeeAddDto employee)
+        {
+            if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
+
+            var entity = _mapper.Map<Employee>(employee);
+
+            _employeeRepository.AddEmployee(companyId, entity);
+            await _employeeRepository.SaveAsync();
+
+            var returnDto = _mapper.Map<EmployeeDto>(entity);
+
+            return CreatedAtRoute(nameof(GetEmployeesForCompany), routeValues: new
+            { 
+                companyId = companyId,
+                employeeId = returnDto.Id
+            }, value: returnDto);
+        }
     }
 }

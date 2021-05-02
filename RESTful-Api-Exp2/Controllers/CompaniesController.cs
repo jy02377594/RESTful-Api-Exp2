@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using RESTful_Api_Exp2.DtoParameters;
+using RESTful_Api_Exp2.Entities;
 using RESTful_Api_Exp2.Models;
 using RESTful_Api_Exp2.Services;
 using System;
@@ -45,7 +46,7 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok(companyDtos);
         }
 
-        [HttpGet(template: "{companyId}")]
+        [HttpGet(template: "{companyId}", Name = nameof(GetCompany))]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany(Guid companyId)
         {
             var company = await _companyRepository.GetCompaniesAsync(companyId);
@@ -62,7 +63,7 @@ namespace RESTful_Api_Exp2.Controllers
         }
 
         [HttpGet]
-        [Route(template: "{companyId}/{employeeId}")]
+        [Route(template: "{companyId}/{employeeId}")] 
         public async Task<ActionResult<EmployeeDto>> GetEmployeeForCompanyAndId(Guid companyId, Guid employeeId)
         {
             if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
@@ -71,6 +72,20 @@ namespace RESTful_Api_Exp2.Controllers
             var employee = await _companyRepository.GetEmployeesAsync(companyId, employeeId);
             var employeeDtos = _mapper.Map<EmployeeDto>(employee);
             return Ok(employeeDtos);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<CompanyDto>> CreateCompany([FromBody]CompanyAddDto company)
+        {
+            //.net core 2.0 没有api controller，需要下面这段代码
+            if (company == null) return BadRequest();
+            var entity = _mapper.Map<Company>(company);
+            _companyRepository.AddCompany(entity);
+            await _companyRepository.SaveAsync();
+
+            var returnDto = _mapper.Map<CompanyDto>(entity);
+            //返回响应带地址的header
+            return CreatedAtRoute(nameof(GetCompany), routeValues: new { companyId = returnDto.Id}, value: returnDto);
         }
     }
 }

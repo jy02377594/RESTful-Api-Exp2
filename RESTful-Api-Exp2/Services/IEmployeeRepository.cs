@@ -12,7 +12,8 @@ namespace RESTful_Api_Exp2.Services
         Task<IEnumerable<Employee>> GetEmployeesAsync();
         Task<IEnumerable<Employee>> GetEmployeesAsync(string FirstName, string LastName);
         Task<Employee> GetEmployeesAsync(Guid EmployeeId);
-        void AddEmployee(Employee employee);
+        void AddEmployee(Guid companyId, Employee entity);
+       // void AddEmployee(Employee employee);
         void UpdateEmployee(Employee employee);
         void DeleteEmployee(Employee employee);
         Task<bool> EmployeeExistAsync(Guid employeeId);

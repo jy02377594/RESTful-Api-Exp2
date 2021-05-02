@@ -48,16 +48,22 @@ namespace RESTful_Api_Exp2.Services
             return await _context.Employees.FirstOrDefaultAsync(x => x.Id == employeeId);
         }
 
-        public void AddEmployee(Employee employee)
+        public void AddEmployee(Guid companyId, Employee entity)
         {
-            if (employee == null)
+            if (companyId == Guid.Empty)
             {
-                throw new ArgumentNullException(nameof(employee));
+                throw new ArgumentNullException(nameof(entity));
+            }
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
             }
 
-            employee.Id = Guid.NewGuid();
-            _context.Employees.Add(employee);
+            //entity.Id = Guid.NewGuid();
+            entity.CompanyId = companyId;
+            _context.Employees.Add(entity);
         }
+
 
         public void DeleteEmployee(Employee employee)
         {

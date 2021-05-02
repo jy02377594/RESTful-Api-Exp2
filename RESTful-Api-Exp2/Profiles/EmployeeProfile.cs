@@ -29,6 +29,8 @@ namespace RESTful_Api_Exp2.Profiles
                 .ForMember(destinationMember: dest => dest.WorkAge,
                 memberOptions: opt => opt.MapFrom(mapExpression: src => DateTime.Now.Year - src.HiredDate.Year)
                 );
+
+            CreateMap<EmployeeAddDto, Employee>();
         }
     }
 }

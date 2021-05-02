@@ -104,6 +104,33 @@ namespace RESTful_Api_Exp2.Services
             return await _context.Employees.Where(x => x.Id == employeeId && x.CompanyId == companyId).FirstOrDefaultAsync();
         }
 
+        public void AddCompany(Company company)
+        {
+            if (company == null) throw new ArgumentNullException(nameof(company));
+
+            company.Id = Guid.NewGuid();
+            //Company实体里有ICollection<Employee>，为一对多关系，所以遍历这个Company实体看有多少Employee,每个Employee创建id
+            //这里的添加是对Company实体操作
+            if (company.Employees != null)
+            {
+                foreach (var employee in company.Employees)
+                {
+                    employee.Id = Guid.NewGuid();
+                }
+            }
+
+            _context.Companies.Add(company);
+        }
+
+        public void UpdateCompany()
+        { 
+        
+        }
+        public void DeleteCompany()
+        {
+            
+        }
+
         public async Task<bool> SaveAsync()
         {
             return (await _context.SaveChangesAsync()) > 0;
