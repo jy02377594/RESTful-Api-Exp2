@@ -39,6 +39,16 @@ namespace RESTful_Api_Exp2.Services
             return await queryExpression.ToListAsync();
         }
 
+        public async Task<IEnumerable<Company>> GetCompaniesAsync(IEnumerable<Guid> companyIds)
+        {
+            if (companyIds == null) throw new ArgumentNullException(nameof(companyIds));
+
+            return await _context.Companies
+                .Where(x => companyIds.Contains(x.Id))
+                .OrderBy(x => x.Name)
+                .ToListAsync();
+        }
+
         public async Task<bool> CompanyExistAsync(Guid companyId)
         {
             if (companyId == Guid.Empty) throw new ArgumentNullException(nameof(companyId));

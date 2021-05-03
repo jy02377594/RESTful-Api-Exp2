@@ -10,6 +10,7 @@ namespace RESTful_Api_Exp2.Services
     {
         Task<bool> CompanyExistAsync(Guid companyId);
         Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters parameters);
+        Task<IEnumerable<Company>> GetCompaniesAsync(IEnumerable<Guid> companyIds);
         //Task<IEnumerable<Company>> GetCompaniesAsync(string FirstName, string LastName);
         Task<Employee> GetEmployeesAsync(Guid companyId, Guid employeeId);
         Task<Company> GetCompaniesAsync(Guid companyId);

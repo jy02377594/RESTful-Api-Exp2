@@ -30,11 +30,11 @@ namespace RESTful_Api_Exp2
             {
                 //请求类型和服务器返回类型不一致时返回406状态码
                 setup.ReturnHttpNotAcceptable = true;
-                //添加返回类型可以是xml
-                setup.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+                //添加返回类型可以是xml,也可以在最后添加AddXmlDataContractSerializerFormatters，直接把请求类型和返回类型都添加了可以xml
+                //setup.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 //setup.OutputFormatters.Insert(index: 0, new XmlDataContractSerializerOutputFormatter());
             }
-            );
+            ).AddXmlDataContractSerializerFormatters();
 
             //添加对象映射器, Add AutoMapper
             //对象映射器能减少Controller里每次写entity对应的model

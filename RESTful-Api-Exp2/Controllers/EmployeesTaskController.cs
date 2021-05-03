@@ -80,8 +80,8 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok(employeeTaskDtos);
         }
 
-        [HttpPost]
-        public async Task<ActionResult<EmployeeDto>> CreateNewTaskForEmployee(Guid employeeId, [FromBody]EmployeeTaskAddDto employeeTask)
+        [HttpPost(template:"CreateTaskWithEmployeeId")]
+        public async Task<ActionResult<EmployeeTaskDto>> CreateNewTaskForEmployee(Guid employeeId, [FromBody]EmployeeTaskAddDto employeeTask)
         {
             if (employeeId == Guid.Empty) return NotFound();
             var entity = _mapper.Map<EmployeeTask>(employeeTask);
@@ -96,6 +96,23 @@ namespace RESTful_Api_Exp2.Controllers
                 employeeId = employeeId,
                 taskId = employeeTaskDto.taskId
             }, value: employeeTaskDto);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<EmployeeTaskDto>> CreateNewTask([FromBody] EmployeeTaskAddDto employeeTask)
+        {
+            var entity = _mapper.Map<EmployeeTask>(employeeTask);
+            _employeeTaskRepository.AddTask(entity);
+            await _employeeTaskRepository.SaveAsync();
+
+            var employeeTaskDto = _mapper.Map<EmployeeTaskDto>(entity);
+            return CreatedAtRoute(nameof(GetTaskByTaskId), routeValues: 
+                new {
+                    //这里必须要给employeeId一个空值，因为路径是api/employees/{employeeId}/employeetask， 
+                    //ApiController会去找employeeId,如果没有空值路由的{employeeId}段会砍掉就找不到查看的url了
+                    employeeId = Guid.Empty,
+                    taskId = employeeTaskDto.taskId 
+                },value: employeeTaskDto);
         }
     }
 }

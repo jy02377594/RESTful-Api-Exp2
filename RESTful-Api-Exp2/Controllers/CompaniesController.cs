@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
+using RESTful_Api_Exp2.Helpers;
 using RESTful_Api_Exp2.Models;
 using RESTful_Api_Exp2.Services;
 using System;
@@ -35,7 +36,7 @@ namespace RESTful_Api_Exp2.Controllers
             _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
         }
         //测试git,再试一下
-        [HttpGet]
+        [HttpGet(Name = nameof(GetCompanies))]
         //查询参数，当需要对数据进行各种条件查询时需要参数，以后如果需要查询的参数多了，不需要改这里的代码，只用在CompanyDtoParameters类里添加就行了
         //不指定来源是query的话会被apicontroller默认为是来自于请求的Body里，所以这里要注明不然返回415错误
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies([FromQuery]CompanyDtoParameters parameters)
@@ -79,6 +80,7 @@ namespace RESTful_Api_Exp2.Controllers
         {
             //.net core 2.0 没有api controller，需要下面这段代码
             if (company == null) return BadRequest();
+
             var entity = _mapper.Map<Company>(company);
             _companyRepository.AddCompany(entity);
             await _companyRepository.SaveAsync();
@@ -86,6 +88,48 @@ namespace RESTful_Api_Exp2.Controllers
             var returnDto = _mapper.Map<CompanyDto>(entity);
             //返回响应带地址的header
             return CreatedAtRoute(nameof(GetCompany), routeValues: new { companyId = returnDto.Id}, value: returnDto);
+        }
+
+        [HttpPost(template: "companycollections")]
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> CreateCompanyCollection(IEnumerable<CompanyAddDto> companyCollection)
+        {
+            var companyEntities = _mapper.Map<IEnumerable<Company>>(companyCollection);
+            foreach (var company in companyEntities)
+            {
+                _companyRepository.AddCompany(company);
+            }
+
+            await _companyRepository.SaveAsync();
+
+            //这里批量添加完company有两种返回展示的方法，一种是直接返回之前的查询出所有companies的方法GetCompanies，一种是返回添加的这些companies，需要添加绑定器
+            var companyDto = _mapper.Map<IEnumerable<CompanyDto>>(companyEntities);
+            //return CreatedAtRoute(nameof(GetCompanies), value: companyDto);
+            //带绑定器的返回
+            var idsString = string.Join(",", companyDto.Select(x => x.Id));
+            return CreatedAtRoute(nameof(GetCompanyCollection),new { ids = idsString}, companyDto);
+        }
+
+        //Key 可以写成 1,2,3 或者 Ke1 = Value1, Key2 = Value2, Key3 = Value3
+        [HttpGet(template: "companycollections/{ids}", Name = nameof(GetCompanyCollection))]
+        public async Task<IActionResult> GetCompanyCollection([FromRoute] 
+        [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
+        {
+            if (ids == null) return BadRequest();
+
+            var entities = await _companyRepository.GetCompaniesAsync(ids);
+
+            if (ids.Count() != entities.Count()) return NotFound();
+
+            var dtosToReturn = _mapper.Map<IEnumerable<CompanyDto>>(entities);
+            return Ok(dtosToReturn);
+        }
+
+        //option请求可以获取针对某个webapi的通信选项的信息,不需要异步，操作数据库
+        [HttpOptions]
+        public IActionResult GetCompaniesOptions()
+        {
+            Response.Headers.Add("Allow", "GET, POST, OPTIONS");
+            return Ok();
         }
     }
 }

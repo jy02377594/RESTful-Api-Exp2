@@ -36,10 +36,12 @@ namespace RESTful_Api_Exp2.Data
                 .WithMany(navigationExpression: x => x.Employees)
                 .HasForeignKey(x => x.CompanyId).OnDelete(DeleteBehavior.Restrict);
 
+            //如果要建立多对多关系这里要写多次HasOne, WithMany
+            //这里的业务需求要让外键为空
             modelBuilder.Entity<EmployeeTask>()
                 .HasOne(navigationExpression: x => x.Employees)
                 .WithMany(navigationExpression: x => x.Tasklist)
-                .HasForeignKey(x => x.EmployeeId).OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(x => x.EmployeeId).OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Company>().HasData(
                 new Company
