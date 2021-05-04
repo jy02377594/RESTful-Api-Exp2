@@ -19,7 +19,8 @@ namespace RESTful_Api_Exp2.Services
         // void DeleteCompany(Company company);
 
         void AddCompany(Company company);
-        void UpdateCompany();
+        void AddCompany(Guid companyId, Company company);
+        void UpdateCompany(Company company);
         void DeleteCompany();
 
         Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, string genderDisplay, string q);

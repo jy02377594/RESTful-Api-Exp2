@@ -136,5 +136,23 @@ namespace RESTful_Api_Exp2.Controllers
                 employeeId = returnDto.Id
             }, value: returnDto);
         }
+
+        //不更新的字段要把原值填上，不然就设成默认值了
+        [HttpPut(template: "{employeeId}")]
+        public async Task<IActionResult> UpdateEmployeeForCompany(Guid employeeId, EmployeePutDto employee)
+        {
+            if (!await _employeeRepository.EmployeeExistAsync(employeeId)) return NotFound();
+            var employeeEntity = await _employeeRepository.GetEmployeesAsync(employeeId);
+            if (employeeEntity == null) return NotFound();
+
+            //entity转化成PutDto
+            //传进来的employee更新到PutDto，把PutDto映射回entity去Profiles设置
+            _mapper.Map(employee, employeeEntity);
+            _employeeRepository.UpdateEmployee(employeeEntity);
+
+            await _employeeRepository.SaveAsync();
+
+            return NoContent();
+        }
     }
 }

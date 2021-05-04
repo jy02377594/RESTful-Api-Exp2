@@ -90,6 +90,36 @@ namespace RESTful_Api_Exp2.Controllers
             return CreatedAtRoute(nameof(GetCompany), routeValues: new { companyId = returnDto.Id}, value: returnDto);
         }
 
+        [HttpPut(template: "{companyId}")]
+        public async Task<IActionResult> CreateCompany(Guid companyId, [FromBody] CompanyUpdateDto company)
+        {
+            //if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
+            if (company == null) return NotFound();
+            var CompanyEntity = await _companyRepository.GetCompaniesAsync(companyId);
+
+            //如果有这个数据就执行下面的更新，没有就走if里的添加
+            if (CompanyEntity == null)
+            {
+                var companyAddDtoEntity = _mapper.Map<Company>(company);
+
+                _companyRepository.AddCompany(companyId, companyAddDtoEntity);
+                await _companyRepository.SaveAsync();
+                var companyAddDto = _mapper.Map<CompanyDto>(companyAddDtoEntity);
+                return CreatedAtRoute(nameof(GetCompany), routeValues: new { companyId = companyId }, value: companyAddDto);
+            }
+           _mapper.Map(company, CompanyEntity);
+            
+            
+            _companyRepository.UpdateCompany(CompanyEntity);
+            await _companyRepository.SaveAsync();
+
+            //更新后展示新的数据
+            var companyDto = _mapper.Map<CompanyDto>(CompanyEntity);
+            return CreatedAtRoute(nameof(GetCompany), routeValues: new { companyId = companyId }, value: companyDto);
+            //也可以啥都不展示,返回的是204
+            //return NoContent();
+        }
+
         [HttpPost(template: "companycollections")]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> CreateCompanyCollection(IEnumerable<CompanyAddDto> companyCollection)
         {
@@ -124,7 +154,7 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok(dtosToReturn);
         }
 
-        //option请求可以获取针对某个webapi的通信选项的信息,不需要异步，操作数据库
+        //option请求可以获取针对某个webapi的通信选项的信息,不需要异步，不操作数据库
         [HttpOptions]
         public IActionResult GetCompaniesOptions()
         {

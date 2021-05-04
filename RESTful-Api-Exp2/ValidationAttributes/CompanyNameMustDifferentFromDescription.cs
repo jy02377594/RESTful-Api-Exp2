@@ -11,11 +11,11 @@ namespace RESTful_Api_Exp2.ValidationAttributes
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var addDto = (CompanyAddDto)validationContext.ObjectInstance;
+            var addDto = (CompanyAddOrUpdateDto)validationContext.ObjectInstance;
 
             if (addDto.Name == addDto.Introduction)
             {
-                return new ValidationResult("Company name can not be same as Introduction", new[] { nameof(EmployeeAddDto) });
+                return new ValidationResult("Company name can not be same as Introduction", new[] { nameof(CompanyAddOrUpdateDto) });
             }
 
             return ValidationResult.Success;

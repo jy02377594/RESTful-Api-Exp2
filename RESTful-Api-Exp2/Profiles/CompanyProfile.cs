@@ -15,6 +15,7 @@ namespace RESTful_Api_Exp2.Profiles
         {
             CreateMap<Company, CompanyDto>();
             CreateMap<CompanyAddDto, Company>();
+            CreateMap<CompanyUpdateDto, Company>();
         }
     }
 }

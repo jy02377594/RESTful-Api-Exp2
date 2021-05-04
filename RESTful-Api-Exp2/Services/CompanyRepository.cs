@@ -132,9 +132,21 @@ namespace RESTful_Api_Exp2.Services
             _context.Companies.Add(company);
         }
 
-        public void UpdateCompany()
+        public void AddCompany(Guid companyId, Company company)
+        {
+            if (company == null) throw new ArgumentNullException(nameof(company));
+            company.Id = companyId;
+            if (company.Employees != null)
+            {
+                foreach (var employee in company.Employees) employee.Id = Guid.NewGuid();
+            }
+
+            _context.Companies.Add(company);
+        }
+
+        public void UpdateCompany(Company company)
         { 
-        
+           //这里不用谢，EF core 会追踪字段变化，最后执行SaveAsync保存
         }
         public void DeleteCompany()
         {

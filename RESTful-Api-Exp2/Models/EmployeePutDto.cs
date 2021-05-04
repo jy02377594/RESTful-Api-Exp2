@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RESTful_Api_Exp2.Models
 {
-    public class EmployeeAddDto
+    public class EmployeePutDto
     {
         [Required(ErrorMessage = "The {0} is required")]
         public string EmployeeNo { get; set; }
