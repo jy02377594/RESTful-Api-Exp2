@@ -18,6 +18,7 @@ namespace RESTful_Api_Exp2.Services
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        //用查询参数来模糊查询有关的公司，这里只根据Name和Introduction来查询，如果这两个字段包含查询参数就返回相应的公司数据
         public async Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters parameters)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));

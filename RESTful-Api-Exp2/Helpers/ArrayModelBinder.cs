@@ -28,6 +28,7 @@ namespace RESTful_Api_Exp2.Helpers
                 return Task.CompletedTask;
             }
 
+            //根据companyId 批量添加company
             //public async Task<IActionResult> GetCompanyCollection([FromRoute] IEnumerable<Guid> ids), 只有ids一个，所以GenericTypeArguments数组的第0个,这是绑定数据的反射
             var elementType = bindingContext.ModelType.GetTypeInfo().GenericTypeArguments[0];
             var converter = TypeDescriptor.GetConverter(elementType); 

@@ -16,6 +16,8 @@ namespace RESTful_Api_Exp2.Profiles
                 memberOptions: opt => opt.MapFrom(mapExpression: src => src.StartTime.Day - src.Deadline.Day));
 
             CreateMap<EmployeeTaskAddDto, EmployeeTask>();
+            CreateMap<EmployeeTaskUpdateDto, EmployeeTask>();
+            CreateMap<EmployeeTask, EmployeeTaskUpdateDto>();
         }
     }
 }

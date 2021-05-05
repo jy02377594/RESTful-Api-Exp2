@@ -1,5 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using RESTful_Api_Exp2.Entities;
 using RESTful_Api_Exp2.Models;
 using RESTful_Api_Exp2.Services;
@@ -12,6 +17,9 @@ namespace RESTful_Api_Exp2.Controllers
 {
     [ApiController]
     [Route(template: "api/employees")]
+    //总结一下，employee的外键是companyId,且companyId不可为空，这里就高度依赖company这个实体了，所以在设计路由的时候应该体现出来
+    //既然每个employee必须得有个companyId,这里的路由最好是先传companyId体现两个表的关系"api/company/{companyId}/employees"
+    //这里如果路由设计的不好，后面的逻辑就会更复杂
     //[Route(template:"api/employees")]
     //[Route(template:"api/[controller]")] //这种写法相当于把EmployeesController的controller去掉剩下的部分，这样写以后改的话路由也会变，合约是不应该随便改的
     public class EmployeesController : ControllerBase
@@ -153,6 +161,84 @@ namespace RESTful_Api_Exp2.Controllers
             await _employeeRepository.SaveAsync();
 
             return NoContent();
+        }
+
+        //为什么路由改成这样就400错误
+        //[HttpPatch("company/{companyId}/{employeeId}")]
+        //public async Task<IActionResult> UpdateEmployeeForCompany([FromRoute]Guid companyId, [FromRoute]Guid employeeId, JsonPatchDocument<EmployeePutDto> patchDocument)
+        //{
+        //    if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
+        //    var employeeEntity = await _employeeRepository.GetEmployeesAsync(employeeId);
+        //    if (employeeEntity == null) return NotFound();
+
+        //    //根据字段查出来的数据格式是employee类型，但是我们要修改的时候是employeePutDto类型，所以要去做一下employee到employeePutDto类型的映射，类型映射
+        //    var dtoToPatch = _mapper.Map<EmployeePutDto>(employeeEntity);
+        //    //需要处理验证错误
+        //    patchDocument.ApplyTo(dtoToPatch);
+
+        //    //两个对象的映射
+        //    _mapper.Map(dtoToPatch, employeeEntity);
+        //    _employeeRepository.UpdateEmployee(employeeEntity);
+        //    await _employeeRepository.SaveAsync();
+
+        //    return NoContent();
+        //}
+
+        [HttpPatch("{employeeId}")]
+        public async Task<IActionResult> UpdateEmployeeForCompany([FromRoute] Guid employeeId, JsonPatchDocument<EmployeePutDto> patchDocument)
+        {
+            var employeeEntity = await _employeeRepository.GetEmployeesAsync(employeeId);
+            //如果没有这个employee不能更新就插入新的employee
+            if (employeeEntity == null)
+            {
+                var employeeDto = new EmployeePutDto();
+                patchDocument.ApplyTo(employeeDto, ModelState);
+
+                if (!TryValidateModel(employeeDto))
+                {
+                    return ValidationProblem(ModelState);
+                }
+
+                var employeeToAdd = _mapper.Map<Employee>(employeeDto);
+                employeeToAdd.Id = employeeId;
+                Guid companyId = Guid.Parse("a3a461ea-e692-6f54-2f3e-f076a08dda14");
+                _employeeRepository.AddEmployee(companyId, employeeToAdd);
+                await _employeeRepository.SaveAsync();
+
+                var dtoToReturn = _mapper.Map<EmployeeDto>(employeeToAdd);
+                return CreatedAtRoute(nameof(GetEmployeesForCompany), routeValues: new
+                {
+                    companyId = companyId,
+                    employeeId = dtoToReturn.Id
+                }, value: dtoToReturn); 
+
+            }
+
+            //根据字段查出来的数据格式是employee类型，但是我们要修改的时候是employeePutDto类型，所以要去做一下employee到employeePutDto类型的映射，类型映射
+            var dtoToPatch = _mapper.Map<EmployeePutDto>(employeeEntity);
+
+            //patchDocument是客户端传过来的数据，这时要用上json操作数组来对dtoToPatch操作, ModelState会返回严重false如果验证有错误
+            patchDocument.ApplyTo(dtoToPatch, ModelState);
+
+            //处理验证错误
+            if (!TryValidateModel(dtoToPatch))
+            {
+                return ValidationProblem(ModelState);
+            };
+
+            //两个对象的映射
+            _mapper.Map(dtoToPatch, employeeEntity);
+            _employeeRepository.UpdateEmployee(employeeEntity);
+            await _employeeRepository.SaveAsync();
+
+            return NoContent();
+        }
+
+        public override ActionResult ValidationProblem(ModelStateDictionary modelStateDictionary)
+        {
+            var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
+
+            return (ActionResult) options.Value.InvalidModelStateResponseFactory(ControllerContext);
         }
     }
 }

@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace RESTful_Api_Exp2.Models
 {
-    public class EmployeeTaskAddDto
+    public class EmployeeTaskUpdateDto
     {
+        public Guid? EmployeeId { get; set; }
+
         [MaxLength(50, ErrorMessage = "The length of {0} must be less than 50")]
         public string TaskName { get; set; }
         public string TaskDescription { get; set; }

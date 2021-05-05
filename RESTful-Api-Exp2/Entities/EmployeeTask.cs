@@ -7,7 +7,7 @@ namespace RESTful_Api_Exp2.Entities
     {
         [Key]
         public Guid taskId { get; set; } //pk
-        public Guid? EmployeeId { get; set; } // foreign key
+        public Guid? EmployeeId { get; set; }
         public string TaskName { get;set; }
         public string TaskDescription { get; set; }
         public DateTime StartTime { get; set; }

@@ -59,6 +59,7 @@ namespace RESTful_Api_Exp2.Services
                 throw new ArgumentNullException(nameof(entity));
             }
 
+            //添加新的employee, 没有给新的id, 下面的Add方法会自动生成一个id
             //entity.Id = Guid.NewGuid();
             entity.CompanyId = companyId;
             _context.Employees.Add(entity);

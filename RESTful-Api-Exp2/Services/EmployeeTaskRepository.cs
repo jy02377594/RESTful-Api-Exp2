@@ -77,6 +77,7 @@ namespace RESTful_Api_Exp2.Services
             {
                 throw new ArgumentNullException(nameof(task));
             }
+            task.EmployeeId = null;
 
             _context.EmployeeTasks.Add(task);
         }

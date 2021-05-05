@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using RESTful_Api_Exp2.Data;
 using RESTful_Api_Exp2.Services;
 using System;
@@ -34,7 +36,28 @@ namespace RESTful_Api_Exp2
                 //setup.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                 //setup.OutputFormatters.Insert(index: 0, new XmlDataContractSerializerOutputFormatter());
             }
-            ).AddXmlDataContractSerializerFormatters();
+            ).AddNewtonsoftJson(setup => {
+                setup.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            }).AddXmlDataContractSerializerFormatters()
+            .ConfigureApiBehaviorOptions(set => {  //配置错误信息
+                set.InvalidModelStateResponseFactory = context =>
+                {
+                    var problemDetails = new ValidationProblemDetails(context.ModelState)
+                    {
+                            Type = "http://www.google.com",
+                            Title = "Error!",
+                            Status = StatusCodes.Status422UnprocessableEntity,
+                            Detail = "Check out detail info plese",
+                            Instance = context.HttpContext.Request.Path
+                    };
+
+                    problemDetails.Extensions.Add("traceId", context.HttpContext.TraceIdentifier);
+                    return new UnprocessableEntityObjectResult(problemDetails)
+                    {
+                        ContentTypes = { "application/problem+json" }
+                    };
+                };
+            });
 
             //添加对象映射器, Add AutoMapper
             //对象映射器能减少Controller里每次写entity对应的model

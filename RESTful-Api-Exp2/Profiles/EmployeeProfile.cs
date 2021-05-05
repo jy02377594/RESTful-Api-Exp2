@@ -32,6 +32,7 @@ namespace RESTful_Api_Exp2.Profiles
 
             CreateMap<EmployeeAddDto, Employee>();
             CreateMap<EmployeePutDto, Employee>();
+            CreateMap<Employee, EmployeePutDto>();
         }
     }
 }
