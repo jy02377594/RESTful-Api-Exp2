@@ -26,14 +26,16 @@ namespace RESTful_Api_Exp2.Controllers
     {
         private readonly ICompanyRepository _companyRepository;
         private readonly IEmployeeRepository _employeeRepository;
+        private readonly IEmployeeTaskRepository _employeeTaskRepository;
         private readonly IMapper _mapper;
 
         //这里要用到automapper做映射，所以要依赖注入IMapper接口
-        public EmployeesController(IEmployeeRepository employeeRepository, IMapper mapper, ICompanyRepository companyRepository)
+        public EmployeesController(IEmployeeRepository employeeRepository, IMapper mapper, ICompanyRepository companyRepository, IEmployeeTaskRepository employeeTaskRepository)
         {
             _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
+            _employeeTaskRepository = employeeTaskRepository ?? throw new ArgumentNullException(nameof(employeeTaskRepository));
         }
         /// <summary>
         /// 如果返回类型可知,更清晰,能用ActionResult尽量不用IActionResult
@@ -111,6 +113,7 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok(_mapper.Map<EmployeeDto>(employees));
         }
 
+        //直接加companyId会和上面的[HttpGet(template: "{employeeId}")]冲突
         //[HttpHead], head跟get的区别就是不传响应的body
         [HttpGet]
         [Route(template: "company/{companyId}", Name = nameof(GetEmployeesForCompany))]
@@ -124,9 +127,9 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok(employessDtos);
         }
 
-        //直接加companyId会和上面的[HttpGet(template: "{employeeId}")]冲突
+
         //[HttpPost(template:"{companyId}")]
-        [HttpPost(template: "company/{companyId}")]
+        [HttpPost(template: "{companyId}")]
         public async Task<ActionResult<EmployeeDto>> CreateEmployeeForCompany(Guid companyId, EmployeeAddDto employee)
         {
             if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
@@ -144,6 +147,8 @@ namespace RESTful_Api_Exp2.Controllers
                 employeeId = returnDto.Id
             }, value: returnDto);
         }
+
+
 
         //不更新的字段要把原值填上，不然就设成默认值了
         [HttpPut(template: "{employeeId}")]
@@ -201,6 +206,8 @@ namespace RESTful_Api_Exp2.Controllers
 
                 var employeeToAdd = _mapper.Map<Employee>(employeeDto);
                 employeeToAdd.Id = employeeId;
+                //这里因为外键约束不能为空或不存在,所以这里插了一个存在的companyId
+                //Guid companyId = Guid.Empty;
                 Guid companyId = Guid.Parse("a3a461ea-e692-6f54-2f3e-f076a08dda14");
                 _employeeRepository.AddEmployee(companyId, employeeToAdd);
                 await _employeeRepository.SaveAsync();
@@ -233,6 +240,23 @@ namespace RESTful_Api_Exp2.Controllers
 
             return NoContent();
         }
+
+        //DbContext里已经设置成级联删除了
+        [HttpDelete("{employeeId}")]
+        public async Task<IActionResult> DeleteEmployeeWithTask(Guid employeeId)
+        {
+            var employeeEntity = await _employeeRepository.GetEmployeesAsync(employeeId);
+            if (employeeEntity == null) return NotFound();
+
+            //虽然级联删除设置了，但是这里要查询一下employee名下的task，加载到dbcontext里
+            await _employeeTaskRepository.GetTasksAsync(employeeId);
+
+            _employeeRepository.DeleteEmployee(employeeEntity);
+            await _employeeRepository.SaveAsync();
+
+            return NoContent();
+        }
+
 
         public override ActionResult ValidationProblem(ModelStateDictionary modelStateDictionary)
         {

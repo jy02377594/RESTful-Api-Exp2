@@ -62,6 +62,13 @@ namespace RESTful_Api_Exp2.Services
             //添加新的employee, 没有给新的id, 下面的Add方法会自动生成一个id
             //entity.Id = Guid.NewGuid();
             entity.CompanyId = companyId;
+            if (entity.Tasklist != null)
+            {
+                foreach (var task in entity.Tasklist)
+                {
+                    task.taskId = Guid.NewGuid();
+                }
+            }
             _context.Employees.Add(entity);
         }
 

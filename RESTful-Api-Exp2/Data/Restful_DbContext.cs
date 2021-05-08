@@ -41,7 +41,7 @@ namespace RESTful_Api_Exp2.Data
             modelBuilder.Entity<EmployeeTask>()
                 .HasOne(navigationExpression: x => x.Employees)
                 .WithMany(navigationExpression: x => x.Tasklist)
-                .HasForeignKey(x => x.EmployeeId).OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(x => x.EmployeeId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Company>().HasData(
                 new Company

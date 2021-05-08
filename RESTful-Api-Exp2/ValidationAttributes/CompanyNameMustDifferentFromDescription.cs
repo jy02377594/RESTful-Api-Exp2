@@ -11,13 +11,27 @@ namespace RESTful_Api_Exp2.ValidationAttributes
     {
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
-            var addDto = (CompanyAddOrUpdateDto)validationContext.ObjectInstance;
-
-            if (addDto.Name == addDto.Introduction)
+            //批量传输时validationContext没法转换，这里批量做验证
+            if (validationContext.ObjectType.Name.Contains("List"))
             {
-                return new ValidationResult("Company name can not be same as Introduction", new[] { nameof(CompanyAddOrUpdateDto) });
+                var addListDto = (List<CompanyAddDto>)validationContext.ObjectInstance;
+                foreach (var Dto in addListDto)
+                {
+                    var addDto = (CompanyAddOrUpdateDto)Dto;
+                    if (addDto.Name == addDto.Introduction)
+                    {
+                        return new ValidationResult("Company name can not be same as Introduction", new[] { nameof(CompanyAddOrUpdateDto) });
+                    }
+                }
             }
-
+            else
+            {
+                var addDto = (CompanyAddOrUpdateDto)validationContext.ObjectInstance;
+                if (addDto.Name == addDto.Introduction)
+                {
+                    return new ValidationResult("Company name can not be same as Introduction", new[] { nameof(CompanyAddOrUpdateDto) });
+                }
+            }
             return ValidationResult.Success;
         }
     }

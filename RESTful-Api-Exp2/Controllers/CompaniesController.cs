@@ -120,9 +120,11 @@ namespace RESTful_Api_Exp2.Controllers
             //return NoContent();
         }
 
+        //根据companyId批量添加company
         [HttpPost(template: "companycollections")]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> CreateCompanyCollection(IEnumerable<CompanyAddDto> companyCollection)
         {
+            if (companyCollection == null) return BadRequest();
             var companyEntities = _mapper.Map<IEnumerable<Company>>(companyCollection);
             foreach (var company in companyEntities)
             {

@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
+using RESTful_Api_Exp2.Helpers;
 using RESTful_Api_Exp2.Models;
 using RESTful_Api_Exp2.Services;
 using System;
@@ -124,11 +126,66 @@ namespace RESTful_Api_Exp2.Controllers
                 }, value: employeeTaskDto);
         }
 
-        //下次写个批量添加employeeTask
+        //批量添加employeeTask
+        [HttpPost("taskcollection")]
+        public async Task<ActionResult<IEnumerable<EmployeeTaskDto>>> CreateTaskCollection(IEnumerable<EmployeeTaskAddDto> taskCollection)
+        {
+            if (taskCollection == null) return BadRequest();
+            var taskEntities = _mapper.Map<IEnumerable<EmployeeTask>>(taskCollection);
+            foreach (var taskEntity in taskEntities)
+            {
+                _employeeTaskRepository.AddTask(taskEntity);
+            }
+            await _employeeTaskRepository.SaveAsync();
+
+            var TaskDtoReturn = _mapper.Map<IEnumerable<EmployeeTaskDto>>(taskEntities);
+            //把插进去的数据组根据taskId查出来拼接在一起
+            string ids = string.Join(",", TaskDtoReturn.Select(x => x.taskId));
+            return CreatedAtRoute(nameof(GetTaskCollection), new { ids = ids }, TaskDtoReturn);
+        }
+
+        //批量查询，添加后显示的方法
+        /// <summary>
+        /// 绑定类型ArrayModelBinder是Helpers里自定义的，不是mvc的。 根据批量ID查task
+        /// </summary>
+        /// <param name="ids"></param>
+        /// <returns></returns>
+        [HttpGet("taskcollection/{ids}", Name = nameof(GetTaskCollection))]
+        public async Task<ActionResult<IEnumerable<EmployeeTaskDto>>> GetTaskCollection([ModelBinder(BinderType =typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
+        {
+            if (ids == null) return BadRequest();
+            var taskEntities = await _employeeTaskRepository.GetTasksAsync(ids);
+            if (taskEntities.Count() != ids.Count()) return NotFound(); 
+
+            var taskDto = _mapper.Map<IEnumerable<EmployeeTaskDto>>(taskEntities);
+
+            return Ok(taskDto);
+        }
+
+        //写一个带查询参数的查询,要注明来自query,默认来自body
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<EmployeeTaskDto>>> GetTasksBySearch([FromQuery] TaskDtoParameters parameters)
+        {
+            if (parameters == null) return BadRequest();
+            var employeeTasks = await _employeeTaskRepository.GetTasksAsync(parameters);
+            var taskDto = _mapper.Map<IEnumerable<EmployeeTaskDto>>(employeeTasks);
+
+            return Ok(taskDto);
+        }
+
+        //根据条件模糊查询，根据字段过滤,查询在指定StartTime之后的数据
+        [HttpGet("filter")]
+        public async Task<ActionResult<IEnumerable<EmployeeTaskDto>>> GetTasksByFilter([FromQuery(Name = "starttime")] DateTime StartTime, string query)
+        {
+            var tasks = await _employeeTaskRepository.GetTasksAsync(StartTime, query);
+            var taskDto = _mapper.Map<IEnumerable<EmployeeTaskDto>>(tasks);
+
+            return Ok(taskDto);
+        }
 
         //局部更新task
         [HttpPatch("{taskId}")]
-        public async Task<IActionResult> UpdateEmployeeTask([FromRoute]Guid taskId, JsonPatchDocument<EmployeeTaskUpdateDto> patchTasks)
+        public async Task<IActionResult> UpdateEmployeeTask([FromRoute] Guid taskId, JsonPatchDocument<EmployeeTaskUpdateDto> patchTasks)
         {
             var taskEntity = await _employeeTaskRepository.GetOneTaskAsync(taskId);
             //查出来的是EmployeeTask类型，要转换成EmployeeTaskUpdateDto
@@ -147,6 +204,17 @@ namespace RESTful_Api_Exp2.Controllers
             _employeeTaskRepository.UpdateTask(taskEntity);
             await _employeeTaskRepository.SaveAsync();
 
+            return NoContent();
+        }
+
+        [HttpDelete("{taskId}")]
+        public async Task<IActionResult> DeleteEmployeeTask(Guid taskId)
+        {
+            var taskEntity = await _employeeTaskRepository.GetOneTaskAsync(taskId);
+            if (taskEntity == null) return NotFound();
+
+            _employeeTaskRepository.DeleteTask(taskEntity);
+            await _employeeTaskRepository.SaveAsync();
             return NoContent();
         }
 

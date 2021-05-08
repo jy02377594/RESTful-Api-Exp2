@@ -37,6 +37,7 @@ namespace RESTful_Api_Exp2.Helpers
             var values = value.Split(separator: new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(x => converter.ConvertFromString(text: x.Trim())).ToArray();
 
+            //新建一个数据实例，把多个value赋值到这里实例，然后绑定到model
             var typedValues = Array.CreateInstance(elementType, values.Length);
             values.CopyTo(typedValues, index: 0);
             bindingContext.Model = typedValues;

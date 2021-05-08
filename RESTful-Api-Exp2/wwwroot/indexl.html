@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>To-do CRUD</title>
+    <link rel="stylesheet" href="css/indexl.css" />
+</head>
+<body>
+    <h1>To-do CRUD</h1>
+    <h3>Add Employee Without Task</h3>
+    <table class="tg">
+        <thead>
+            <tr>
+                <th class="tg-0lax"><div>employeeNo</div></th>
+                <th class="tg-0lax"><div>firstName</div></th>
+                <th class="tg-0lax"><div>lastName</div></th>
+                <th class="tg-0lax"><div>hiredDate</div></th>
+                <th class="tg-0lax"><div>gender</div></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="tg-0lax"><input type="text" id="employeeNo" /></td>
+                <td class="tg-0lax"><input type="text" id="firstName" /></td>
+                <td class="tg-0lax"><input type="text" id="lastName" /></td>
+                <td class="tg-0lax"><input type="text" id="hiredDate" /></td>
+                <td class="tg-0lax"><input type="text" id="gender" /></td>
+            </tr>
+        </tbody>
+    </table>
+    <br />
+    <div>
+        <br />
+        <h3>Add Employee With Tasks</h3>
+        <table class="tg">
+            <thead>
+                <tr>
+                    <th class="tg-0lax"><div>taskName</div></th>
+                    <th class="tg-0lax"><div>taskDescription</div></th>
+                    <th class="tg-0lax"><div>startTime</div></th>
+                    <th class="tg-0lax"><div>Deadline</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tg-0lax"><input type="text" id="taskName" /></td>
+                    <td class="tg-0lax"><input type="text" id="taskDescription" /></td>
+                    <td class="tg-0lax"><input type="text" id="startTime" /></td>
+                    <td class="tg-0lax"><input type="text" id="Deadline" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+                <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
+            <input type="submit" value="Add" method="POST" onsubmit="addItem()">
+        </form>
+        <br />
+        <div>The employee belongs to which company <input type="text" id="companyId" /></div>
+    </div>
+    <div id="deleteForm">
+        <h3>DeleteById</h3>
+        <form action="javascript:void(0);">
+            <input type="text" id="deleteId">
+            <input type="submit" onclick="deleteItem()" value="Delete">
+        </form>
+    </div>
+
+    <div id="editForm">
+        <h3>Update</h3>
+        <table class="tg">
+            <thead>
+                <tr>
+                    <th class="tg-0lax"><div>employeeNo</div></th>
+                    <th class="tg-0lax"><div>firstName</div></th>
+                    <th class="tg-0lax"><div>lastName</div></th>
+                    <th class="tg-0lax"><div>hiredDate</div></th>
+                    <th class="tg-0lax"><div>gender</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tg-0lax"><input type="text" id="update_employeeNo" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_firstName" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_lastName" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_hiredDate" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_gender" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <form action="javascript:void(0);">
+            <div>UpdateID</div>
+            <input type="text" id="update_id">
+            <input type="submit" onclick="updateItem()" value="Save">
+        </form>
+    </div>
+
+    <p id="counter"></p>
+    <div id="showData">
+        <h3>Show</h3>
+        <input type="submit" value="ShowAllEmployeesInfo" onclick="getItems()">
+        <input type="submit" value="ShowAllCompanies" onclick="getCompanyItems()">
+        <input type="submit" value="ShowAllTasks" onclick="getTaskItems()">
+    </div>
+    <pre><code id="json"></code></pre>
+    <pre><code id="companyjson"></code></pre>
+
+    <script src="js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+
+    </script>
+</body>
+</html>

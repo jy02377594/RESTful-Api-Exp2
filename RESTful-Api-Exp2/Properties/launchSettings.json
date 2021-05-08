@@ -4,7 +4,7 @@
     "RESTful_Api_Exp2": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/employees",
+     // "launchUrl": "api/employees",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

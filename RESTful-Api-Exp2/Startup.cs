@@ -90,6 +90,10 @@ namespace RESTful_Api_Exp2
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            DefaultFilesOptions options = new DefaultFilesOptions();
+            options.DefaultFileNames.Add("indexl.html");    //将index.html改为需要默认起始页的文件名.
+            app.UseDefaultFiles(options);
+            app.UseStaticFiles();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -106,6 +110,10 @@ namespace RESTful_Api_Exp2
                     });
                 });
             }
+
+            //设置起始页 Configure the app to serve static files and enable default file mapping.
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 
