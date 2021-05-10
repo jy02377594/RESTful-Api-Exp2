@@ -2,15 +2,16 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>To-do CRUD</title>
+    <title>Tasks CRUD</title>
     <link rel="stylesheet" href="css/indexl.css" />
 </head>
 <body>
-    <h1>To-do CRUD</h1>
-    <h2>Task Operation
-    <input type="button" value="JumpToTask"  onclick="JumpToTask()" />
+    <h1>Tasks CRUD</h1>
+    <h2>
+        Employee Operation
+        <input type="button" value="JumpToEmployee" onclick="JumpToEmployee()" />
     </h2>
-    <h3>Add Employee Without Task</h3>
+    <h3>Add Task</h3>
     <table class="tg">
         <thead>
             <tr>
@@ -32,6 +33,11 @@
         </tbody>
     </table>
     <br />
+    <div>The taks belongs to which employee, enter employeeId please <input type="text" id="employeeId" /></div>
+    <br />
+    <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
+        <input type="submit" value="Add" method="POST" onsubmit="addItem()">
+    </form>
     <div>
         <br />
         <h3>Add Employee With Tasks</h3>
@@ -58,7 +64,7 @@
             <input type="submit" value="Add" method="POST" onsubmit="addItem()">
         </form>
         <br />
-        <div>The employee belongs to which company <input type="text" id="companyId" /></div>
+
     </div>
     <div id="deleteForm">
         <h3>DeleteById</h3>
@@ -73,26 +79,26 @@
         <table class="tg">
             <thead>
                 <tr>
-                    <th class="tg-0lax"><div>employeeNo</div></th>
-                    <th class="tg-0lax"><div>firstName</div></th>
-                    <th class="tg-0lax"><div>lastName</div></th>
-                    <th class="tg-0lax"><div>hiredDate</div></th>
-                    <th class="tg-0lax"><div>gender</div></th>
+                    <th class="tg-0lax"><div>employeeId</div></th>
+                    <th class="tg-0lax"><div>taskName</div></th>
+                    <th class="tg-0lax"><div>taskDescription</div></th>
+                    <th class="tg-0lax"><div>startTime</div></th>
+                    <th class="tg-0lax"><div>Deadline</div></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="tg-0lax"><input type="text" id="update_employeeNo" /></td>
-                    <td class="tg-0lax"><input type="text" id="update_firstName" /></td>
-                    <td class="tg-0lax"><input type="text" id="update_lastName" /></td>
-                    <td class="tg-0lax"><input type="text" id="update_hiredDate" /></td>
-                    <td class="tg-0lax"><input type="text" id="update_gender" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_employeeId" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_taskName" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_taskDescription" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_startTime" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_Deadline" /></td>
                 </tr>
             </tbody>
         </table>
         <form action="javascript:void(0);">
-            <div>UpdateID</div>
-            <input type="text" id="update_id">
+            <div>TaskID</div>
+            <input type="text" id="update_task_id">
             <input type="submit" onclick="updateItem()" value="Save">
         </form>
     </div>
@@ -100,14 +106,23 @@
     <p id="counter"></p>
     <div id="showData">
         <h3>Show</h3>
-        <input type="submit" value="ShowAllEmployeesInfo" onclick="getItems()">
-        <input type="submit" value="ShowAllCompanies" onclick="getCompanyItems()">
-        <input type="submit" value="ShowAllTasks" onclick="getTaskItems()">
+        <input type="submit" value="ShowAllTasksInfo" onclick="getItems()">
+        <input type="submit" value="ShowAllEmployeesInfo" onclick="getEmployees()">
+        <input type="submit" value="GetTasksByEmployeeId" onclick="GetTasksByEmployeeId()">
+        <br />
+        <input type="text" id="Search_taskName">
+        <input type="submit" value="GetTaskByTaskName" onclick="GetTaskByTaskName()">
+        <br />
+        <input type="text" id="taskId">
+        <input type="submit" value="GetTaskByTaskId" onclick="GetTaskByTaskId()">
+        <br />
+        <input type="submit" value="GetTaskByTaskList" onclick="GetTaskByTaskList()">
+        <input type="submit" value="BatchQueryByTaksIds" onclick="BatchQueryByTaksIds()">
+        <input type="submit" value="GetTasksBySearch" onclick="GetTasksBySearch()">
     </div>
     <pre><code id="json"></code></pre>
-    <pre><code id="companyjson"></code></pre>
 
-    <script src="js/site.js" asp-append-version="true"></script>
+    <script src="js/task.js" asp-append-version="true"></script>
     <script type="text/javascript">
 
     </script>

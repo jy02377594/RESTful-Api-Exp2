@@ -203,3 +203,7 @@ function _displayCompanyItems(data) {
         btn.textContent += JSON.stringify(item, null, '  ');
     })
 }
+
+function JumpToTask() {
+    window.location.href = 'tasksCRUD.html';
+}
