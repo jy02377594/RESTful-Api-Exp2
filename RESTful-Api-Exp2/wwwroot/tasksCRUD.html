@@ -11,60 +11,105 @@
         Employee Operation
         <input type="button" value="JumpToEmployee" onclick="JumpToEmployee()" />
     </h2>
-    <h3>Add Task</h3>
+    <h3>Add Tasks with employee</h3>
     <table class="tg">
         <thead>
             <tr>
-                <th class="tg-0lax"><div>employeeNo</div></th>
-                <th class="tg-0lax"><div>firstName</div></th>
-                <th class="tg-0lax"><div>lastName</div></th>
-                <th class="tg-0lax"><div>hiredDate</div></th>
-                <th class="tg-0lax"><div>gender</div></th>
+                <th class="tg-0lax"><div>taskName</div></th>
+                <th class="tg-0lax"><div>taskDescription</div></th>
+                <th class="tg-0lax"><div>startTime</div></th>
+                <th class="tg-0lax"><div>deadline</div></th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td class="tg-0lax"><input type="text" id="employeeNo" /></td>
-                <td class="tg-0lax"><input type="text" id="firstName" /></td>
-                <td class="tg-0lax"><input type="text" id="lastName" /></td>
-                <td class="tg-0lax"><input type="text" id="hiredDate" /></td>
-                <td class="tg-0lax"><input type="text" id="gender" /></td>
+                <td class="tg-0lax"><input type="text" id="taskName" /></td>
+                <td class="tg-0lax"><input type="text" id="taskDescription" /></td>
+                <td class="tg-0lax"><input type="text" id="startTime" /></td>
+                <td class="tg-0lax"><input type="text" id="deadline" /></td>
             </tr>
         </tbody>
     </table>
     <br />
     <div>The taks belongs to which employee, enter employeeId please <input type="text" id="employeeId" /></div>
     <br />
-    <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
-        <input type="submit" value="Add" method="POST" onsubmit="addItem()">
+    <form action="javascript:void(0);" method="POST" onsubmit="AddTasks()">
+        <input type="submit" value="Add" method="POST" onsubmit="AddTasks()">
     </form>
     <div>
         <br />
-        <h3>Add Employee With Tasks</h3>
+        <h3>Add Tasks With an Employee</h3>
+        <br />
+        <form action="javascript:void(0);" method="POST" onsubmit="AddTasks()">
+            <input type="submit" value="Add" method="POST" onsubmit="AddTasks()">
+        </form>
+        <br />
+    </div>
+    <div>
+        <br />
+        <h3>Add Multiple Tasks Without Employee</h3>
+        <br />
         <table class="tg">
             <thead>
                 <tr>
                     <th class="tg-0lax"><div>taskName</div></th>
                     <th class="tg-0lax"><div>taskDescription</div></th>
                     <th class="tg-0lax"><div>startTime</div></th>
-                    <th class="tg-0lax"><div>Deadline</div></th>
+                    <th class="tg-0lax"><div>deadline</div></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="tg-0lax"><input type="text" id="taskName" /></td>
-                    <td class="tg-0lax"><input type="text" id="taskDescription" /></td>
-                    <td class="tg-0lax"><input type="text" id="startTime" /></td>
-                    <td class="tg-0lax"><input type="text" id="Deadline" /></td>
+                    <td class="tg-0lax"><input type="text" id="taskName1" /></td>
+                    <td class="tg-0lax"><input type="text" id="taskDescription1" /></td>
+                    <td class="tg-0lax"><input type="text" id="startTime1" /></td>
+                    <td class="tg-0lax"><input type="text" id="deadline1" /></td>
                 </tr>
             </tbody>
         </table>
         <br />
-        <form action="javascript:void(0);" method="POST" onsubmit="addItem()">
-            <input type="submit" value="Add" method="POST" onsubmit="addItem()">
+        <table class="tg">
+            <thead>
+                <tr>
+                    <th class="tg-0lax"><div>taskName</div></th>
+                    <th class="tg-0lax"><div>taskDescription</div></th>
+                    <th class="tg-0lax"><div>startTime</div></th>
+                    <th class="tg-0lax"><div>deadline</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tg-0lax"><input type="text" id="taskName2" /></td>
+                    <td class="tg-0lax"><input type="text" id="taskDescription2" /></td>
+                    <td class="tg-0lax"><input type="text" id="startTime2" /></td>
+                    <td class="tg-0lax"><input type="text" id="deadline2" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <table class="tg">
+            <thead>
+                <tr>
+                    <th class="tg-0lax"><div>taskName</div></th>
+                    <th class="tg-0lax"><div>taskDescription</div></th>
+                    <th class="tg-0lax"><div>startTime</div></th>
+                    <th class="tg-0lax"><div>deadline</div></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="tg-0lax"><input type="text" id="taskName3" /></td>
+                    <td class="tg-0lax"><input type="text" id="taskDescription3" /></td>
+                    <td class="tg-0lax"><input type="text" id="startTime3" /></td>
+                    <td class="tg-0lax"><input type="text" id="deadline3" /></td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+        <form action="javascript:void(0);" method="POST" onsubmit="AddMultiTasks()">
+            <input type="submit" value="Add" method="POST" onsubmit="AddMultiTasks()">
         </form>
         <br />
-
     </div>
     <div id="deleteForm">
         <h3>DeleteById</h3>
@@ -83,7 +128,7 @@
                     <th class="tg-0lax"><div>taskName</div></th>
                     <th class="tg-0lax"><div>taskDescription</div></th>
                     <th class="tg-0lax"><div>startTime</div></th>
-                    <th class="tg-0lax"><div>Deadline</div></th>
+                    <th class="tg-0lax"><div>deadline</div></th>
                 </tr>
             </thead>
             <tbody>
@@ -92,14 +137,14 @@
                     <td class="tg-0lax"><input type="text" id="update_taskName" /></td>
                     <td class="tg-0lax"><input type="text" id="update_taskDescription" /></td>
                     <td class="tg-0lax"><input type="text" id="update_startTime" /></td>
-                    <td class="tg-0lax"><input type="text" id="update_Deadline" /></td>
+                    <td class="tg-0lax"><input type="text" id="update_deadline" /></td>
                 </tr>
             </tbody>
         </table>
         <form action="javascript:void(0);">
             <div>TaskID</div>
             <input type="text" id="update_task_id">
-            <input type="submit" onclick="updateItem()" value="Save">
+            <input type="submit" onclick="updateItem()" value="Save"> <label style="color:red">employeeId could be empty, if not, employee must be exist</label>
         </form>
     </div>
 
@@ -116,8 +161,12 @@
         <input type="text" id="taskId">
         <input type="submit" value="GetTaskByTaskId" onclick="GetTaskByTaskId()">
         <br />
+        <input type="text" id="taskList">
         <input type="submit" value="GetTaskByTaskList" onclick="GetTaskByTaskList()">
+        <br />
         <input type="submit" value="BatchQueryByTaksIds" onclick="BatchQueryByTaksIds()">
+        <br />
+        Search Term <input type="text" id="searchTerm"> Deadline <input type="text" id="deadline" />
         <input type="submit" value="GetTasksBySearch" onclick="GetTasksBySearch()">
     </div>
     <pre><code id="json"></code></pre>

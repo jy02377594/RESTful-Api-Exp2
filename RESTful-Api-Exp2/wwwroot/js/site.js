@@ -34,7 +34,7 @@ function addItem() {
         if (gender == "male" || gender == "男") gender = 1;
         if (gender == "female" || gender == "女") gender = 2;
     }
-    else window.alert("Your gender input is error");
+    else alert("Your gender input is error");
 
     var item = {
         employeeNo: employeeNo,

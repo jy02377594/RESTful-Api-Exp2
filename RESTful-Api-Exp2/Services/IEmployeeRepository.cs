@@ -16,7 +16,7 @@ namespace RESTful_Api_Exp2.Services
        // void AddEmployee(Employee employee);
         void UpdateEmployee(Employee employee);
         void DeleteEmployee(Employee employee);
-        Task<bool> EmployeeExistAsync(Guid employeeId);
+        Task<bool> EmployeeExistAsync(Guid? employeeId);
         Task<bool> SaveAsync();
     }
 }

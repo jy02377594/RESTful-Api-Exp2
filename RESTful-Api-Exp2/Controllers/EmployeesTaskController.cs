@@ -93,7 +93,8 @@ namespace RESTful_Api_Exp2.Controllers
         [HttpPost(template: "employee/{employeeId}/CreateTaskWithEmployeeId")]
         public async Task<ActionResult<EmployeeTaskDto>> CreateNewTaskForEmployee(Guid employeeId, [FromBody] EmployeeTaskAddDto employeeTask)
         {
-            if (employeeId == Guid.Empty) return NotFound();
+            //EmployeeExistAsync返回类型是task<bool>,这里是异步的，所以要await
+            if (!await _employeeRepository.EmployeeExistAsync(employeeId)) return NotFound();
             var entity = _mapper.Map<EmployeeTask>(employeeTask);
 
             _employeeTaskRepository.AddTask(employeeId, entity);
@@ -202,6 +203,9 @@ namespace RESTful_Api_Exp2.Controllers
 
             //这里要把输入对象转换成目标对象，因为要存进数据库，所以目标类型是EmployeeTask，目标就是taskEntity,CreateMap<EmployeeTaskUpdateDto, EmployeeTask>();
             _mapper.Map(dtoToPatch, taskEntity);
+            //更新task的employeeId的时候要确保这个id确实存在，或者为空
+            if (!await _employeeRepository.EmployeeExistAsync(taskEntity.EmployeeId) && taskEntity.EmployeeId != null) return NotFound();
+
             _employeeTaskRepository.UpdateTask(taskEntity);
             await _employeeTaskRepository.SaveAsync();
 

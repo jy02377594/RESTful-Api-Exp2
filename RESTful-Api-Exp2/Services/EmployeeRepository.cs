@@ -88,7 +88,7 @@ namespace RESTful_Api_Exp2.Services
             // _context.Entry(employee).State = EntityState.Modified;
         }
 
-        public async Task<bool> EmployeeExistAsync(Guid employeeId)
+        public async Task<bool> EmployeeExistAsync(Guid? employeeId)
         {
             if (employeeId == Guid.Empty)
             {

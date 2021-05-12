@@ -91,7 +91,7 @@ namespace RESTful_Api_Exp2
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             DefaultFilesOptions options = new DefaultFilesOptions();
-            options.DefaultFileNames.Add("indexl.html");    //将index.html改为需要默认起始页的文件名.
+            options.DefaultFileNames.Add("tasksCRUD.html");    //将index.html改为需要默认起始页的文件名.
             app.UseDefaultFiles(options);
             app.UseStaticFiles();
             if (env.IsDevelopment())
