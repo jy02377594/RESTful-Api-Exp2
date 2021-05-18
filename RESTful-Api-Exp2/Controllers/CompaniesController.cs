@@ -8,6 +8,8 @@ using RESTful_Api_Exp2.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace RESTful_Api_Exp2.Controllers
@@ -18,7 +20,7 @@ namespace RESTful_Api_Exp2.Controllers
     [Route(template:"api/companies")]
     public class CompaniesController : ControllerBase
     {
-        // services
+        // container of services, 容器
         public readonly IEmployeeRepository _employeeRepository;
         public readonly ICompanyRepository _companyRepository;
         public readonly IMapper _mapper;
@@ -42,6 +44,33 @@ namespace RESTful_Api_Exp2.Controllers
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies([FromQuery]CompanyDtoParameters parameters)
         {
             var companies = await _companyRepository.GetCompaniesAsync(parameters);
+            var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
+
+            return Ok(companyDtos);
+        }
+
+        [HttpGet("GetCompanyWithPage", Name = nameof(GetCompaniesWithPage))]
+        [HttpHead]
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompaniesWithPage([FromQuery] CompanyDtoParameters parameters)
+        {
+            var companies = await _companyRepository.GetCompaniesAsyncWithPL(parameters);
+            var previousLink = companies.HasPrevious ? CreateCompaniesResourceUri(parameters, ResourceUriType.PreviousPage) : null;
+            var nextLink = companies.HasNext ? CreateCompaniesResourceUri(parameters, ResourceUriType.NextPage) : null;
+
+            var paginationMetadata = new
+            {
+                totalCount = companies.TotalCount,
+                pageSize = companies.PageSize,
+                currentPage = companies.CurrentPage,
+                totalPages = companies.TotalPages,
+                previousLink,
+                nextLink
+            };
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata, new JsonSerializerOptions
+            { 
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            }));
             var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
             return Ok(companyDtos);
@@ -162,6 +191,39 @@ namespace RESTful_Api_Exp2.Controllers
         {
             Response.Headers.Add("Allow", "GET, POST, OPTIONS");
             return Ok();
+        }
+
+        private string CreateCompaniesResourceUri(CompanyDtoParameters parameters, ResourceUriType type)
+        {
+            switch (type)
+            {
+                case ResourceUriType.PreviousPage:
+                    return Url.Link(nameof(GetCompaniesWithPage), new
+                    {
+                        pageNumber = parameters.PageNumber - 1,
+                        pageSize = parameters.PageSize,
+                        companyName = parameters.CompanyName,
+                        searchTerm = parameters.SearchTerm
+                    });
+
+                case ResourceUriType.NextPage:
+                    return Url.Link(nameof(GetCompaniesWithPage), new
+                    {
+                        pageNumber = parameters.PageNumber + 1,
+                        pageSize = parameters.PageSize,
+                        companyName = parameters.CompanyName,
+                        searchTerm = parameters.SearchTerm
+                    });
+
+                default:
+                    return Url.Link(nameof(GetCompaniesWithPage), new
+                    {
+                        pageNumber = parameters.PageNumber,
+                        pageSize = parameters.PageSize,
+                        companyName = parameters.CompanyName,
+                        searchTerm = parameters.SearchTerm
+                    });
+            }
         }
     }
 }

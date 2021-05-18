@@ -2,6 +2,7 @@
 using RESTful_Api_Exp2.Data;
 using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
+using RESTful_Api_Exp2.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,14 +60,15 @@ namespace RESTful_Api_Exp2.Services
                 .ToListAsync();
         }
         //fuzzy query by parameters
-        public async Task<IEnumerable<EmployeeTask>> GetTasksAsync(TaskDtoParameters parameters)
+        public async Task<PagedListForTask<EmployeeTask>> GetTasksAsync(TaskDtoParameters parameters)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            var queryExpression = _context.EmployeeTasks as IQueryable<EmployeeTask>;
+
             //判断datetime类型为空就看它和最小值相等与否，最小值是0001-01-01
             if (string.IsNullOrWhiteSpace(parameters.SearchTerm) && parameters.Deadline == DateTime.MinValue)
-                return await _context.EmployeeTasks.ToListAsync();
+                return await PagedListForTask<EmployeeTask>.CreateAsnyc(queryExpression, parameters.PageNumber, parameters.PageSize);
 
-            var queryExpression = _context.EmployeeTasks as IQueryable<EmployeeTask>;
             //这里不能转成IEnumerable因为后面不能转成异步list,而IQueryable相当于生成不马上执行的sql查询语句，可以转成异步list
             //var queryExpression = _context.EmployeeTasks as IEnumerable<EmployeeTask>;
             if (parameters.Deadline != DateTime.MinValue)
@@ -81,7 +83,7 @@ namespace RESTful_Api_Exp2.Services
                 queryExpression = queryExpression.Where(x => x.TaskName.Contains(parameters.SearchTerm) || x.TaskDescription.Contains(parameters.SearchTerm));
             }
 
-            return await queryExpression.ToListAsync();
+            return await PagedListForTask<EmployeeTask>.CreateAsnyc(queryExpression, parameters.PageNumber, parameters.PageSize);
         }
 
         public async Task<IEnumerable<EmployeeTask>> GetTasksAsync(DateTime StartTime, string query)

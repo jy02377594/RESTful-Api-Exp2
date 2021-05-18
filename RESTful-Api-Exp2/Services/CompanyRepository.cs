@@ -2,6 +2,7 @@
 using RESTful_Api_Exp2.Data;
 using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
+using RESTful_Api_Exp2.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,8 @@ namespace RESTful_Api_Exp2.Services
         public async Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters parameters)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-            if (string.IsNullOrWhiteSpace(parameters.CompanyName) && string.IsNullOrWhiteSpace(parameters.SearchTerm))
-            { return await _context.Companies.ToListAsync(); }
+            //if (string.IsNullOrWhiteSpace(parameters.CompanyName) && string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            //{ return await _context.Companies.ToListAsync(); }
 
             var queryExpression = _context.Companies as IQueryable<Company>;
             if (!string.IsNullOrWhiteSpace(parameters.CompanyName))
@@ -37,7 +38,32 @@ namespace RESTful_Api_Exp2.Services
                 parameters.SearchTerm = parameters.SearchTerm.Trim();
                 queryExpression = queryExpression.Where(x => x.Name.Contains(parameters.SearchTerm) || x.Introduction.Contains(parameters.SearchTerm));
             }
+            //flip over, 翻页
+            queryExpression = queryExpression.Skip(parameters.PageSize * (parameters.PageNumber - 1))
+                .Take(parameters.PageSize);
+            //IQeryable延迟执行，到下面tolist才会执行查询语句到数据库
             return await queryExpression.ToListAsync();
+        }
+
+        public async Task<PagedList<Company>> GetCompaniesAsyncWithPL(CompanyDtoParameters parameters)
+        {
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+
+
+            var queryExpression = _context.Companies as IQueryable<Company>;
+            if (!string.IsNullOrWhiteSpace(parameters.CompanyName))
+            {
+                parameters.CompanyName = parameters.CompanyName.Trim();
+                queryExpression = queryExpression.Where(x => x.Name == parameters.CompanyName);
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                parameters.SearchTerm = parameters.SearchTerm.Trim();
+                queryExpression = queryExpression.Where(x => x.Name.Contains(parameters.SearchTerm) || x.Introduction.Contains(parameters.SearchTerm));
+            }
+
+            return await PagedList<Company>.CreateAsync(queryExpression, parameters.PageNumber, parameters.PageSize);
         }
 
         public async Task<IEnumerable<Company>> GetCompaniesAsync(IEnumerable<Guid> companyIds)

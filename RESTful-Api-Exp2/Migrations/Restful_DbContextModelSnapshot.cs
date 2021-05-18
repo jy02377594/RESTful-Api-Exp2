@@ -54,6 +54,36 @@ namespace RESTful_Api_Exp2.Migrations
                             Id = new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadb8"),
                             Introduction = "Fuck 996",
                             Name = "Alibaba"
+                        },
+                        new
+                        {
+                            Id = new Guid("bf6ca130-51af-4e42-aee6-16a2b922c8b8"),
+                            Introduction = "996 icu 007 death",
+                            Name = "DreamCompany1"
+                        },
+                        new
+                        {
+                            Id = new Guid("136fa82f-57f7-4479-90cc-8dc4198d0ec1"),
+                            Introduction = "996 icu 007 death",
+                            Name = "DreamCompany2"
+                        },
+                        new
+                        {
+                            Id = new Guid("b80d95ba-30fc-4eb9-b138-7b841497b457"),
+                            Introduction = "996 icu 007 death",
+                            Name = "DreamCompany3"
+                        },
+                        new
+                        {
+                            Id = new Guid("5f05d00d-11c5-4796-9f86-270ccd9560e0"),
+                            Introduction = "996 icu 007 death",
+                            Name = "DreamCompany4"
+                        },
+                        new
+                        {
+                            Id = new Guid("d103dd72-ef31-45d5-a9ff-0b2bd17788a8"),
+                            Introduction = "996 icu 007 death",
+                            Name = "DreamCompany5"
                         });
                 });
 
@@ -163,7 +193,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
-                            StartTime = new DateTime(2021, 5, 2, 11, 51, 39, 889, DateTimeKind.Local).AddTicks(3613),
+                            StartTime = new DateTime(2021, 5, 12, 21, 46, 52, 867, DateTimeKind.Local).AddTicks(2735),
                             TaskDescription = "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs",
                             TaskName = "fix bugs"
                         },
@@ -181,7 +211,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("5ce682ef-bc20-4e11-bce6-12916576698e"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"),
-                            StartTime = new DateTime(2021, 5, 2, 0, 0, 0, 0, DateTimeKind.Local),
+                            StartTime = new DateTime(2021, 5, 12, 0, 0, 0, 0, DateTimeKind.Local),
                             TaskDescription = "make america great again",
                             TaskName = "bullshit"
                         },
@@ -202,6 +232,51 @@ namespace RESTful_Api_Exp2.Migrations
                             StartTime = new DateTime(2021, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             TaskDescription = "I know your monster, I know your pain",
                             TaskName = "go home"
+                        },
+                        new
+                        {
+                            taskId = new Guid("9e0dd20e-659d-4f37-87be-9b24b7b69b98"),
+                            Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeId = new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
+                            StartTime = new DateTime(2021, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TaskDescription = "I know your monster, I know your pain",
+                            TaskName = "go home again"
+                        },
+                        new
+                        {
+                            taskId = new Guid("747e7a32-3876-44ce-b85f-dd557b2984d9"),
+                            Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeId = new Guid("6c561b72-f44b-40ee-ba4b-a77d17aa8fef"),
+                            StartTime = new DateTime(2021, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TaskDescription = "I know your monster, I know your pain",
+                            TaskName = "go home2"
+                        },
+                        new
+                        {
+                            taskId = new Guid("98549e15-5596-4d43-9106-0bd2d67bf7c8"),
+                            Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeId = new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"),
+                            StartTime = new DateTime(2021, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TaskDescription = "I know your monster, I know your pain",
+                            TaskName = "go home3"
+                        },
+                        new
+                        {
+                            taskId = new Guid("84bdba17-e4d6-4b2a-8ade-7d8606eff3ea"),
+                            Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeId = new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
+                            StartTime = new DateTime(2021, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TaskDescription = "I know your monster, I know your pain",
+                            TaskName = "go home4"
+                        },
+                        new
+                        {
+                            taskId = new Guid("d547664e-249d-4f88-b1db-dcfd0bf3d623"),
+                            Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmployeeId = new Guid("6c561b72-f44b-40ee-ba4b-a77d17aa8fef"),
+                            StartTime = new DateTime(2021, 4, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TaskDescription = "I know your monster, I know your pain",
+                            TaskName = "go home5"
                         });
                 });
 
@@ -221,7 +296,7 @@ namespace RESTful_Api_Exp2.Migrations
                     b.HasOne("RESTful_Api_Exp2.Entities.Employee", "Employees")
                         .WithMany("Tasklist")
                         .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Employees");
                 });

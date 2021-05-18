@@ -61,6 +61,36 @@ namespace RESTful_Api_Exp2.Data
                     Id = Guid.Parse("a06b7e5d-83e7-473d-ad40-79d9fadfadb8"),
                     Name = "Alibaba",
                     Introduction = "Fuck 996"
+                },
+                new Company
+                {
+                    Id = Guid.Parse("bf6ca130-51af-4e42-aee6-16a2b922c8b8"),
+                    Name = "DreamCompany1",
+                    Introduction = "996 icu 007 death"
+                },
+                new Company
+                {
+                    Id = Guid.Parse("136fa82f-57f7-4479-90cc-8dc4198d0ec1"),
+                    Name = "DreamCompany2",
+                    Introduction = "996 icu 007 death"
+                },
+                new Company
+                {
+                    Id = Guid.Parse("b80d95ba-30fc-4eb9-b138-7b841497b457"),
+                    Name = "DreamCompany3",
+                    Introduction = "996 icu 007 death"
+                },
+                new Company
+                {
+                    Id = Guid.Parse("5f05d00d-11c5-4796-9f86-270ccd9560e0"),
+                    Name = "DreamCompany4",
+                    Introduction = "996 icu 007 death"
+                },
+                new Company
+                {
+                    Id = Guid.Parse("d103dd72-ef31-45d5-a9ff-0b2bd17788a8"),
+                    Name = "DreamCompany5",
+                    Introduction = "996 icu 007 death"
                 }
                 );
 
@@ -142,7 +172,52 @@ namespace RESTful_Api_Exp2.Data
                     TaskDescription = "I know your monster, I know your pain",
                     StartTime = DateTime.Parse("2021/4/29"),
                     Deadline = DateTime.Parse("2021/5/15")
-                }
+                },
+                                new EmployeeTask
+                                {
+                                    taskId = Guid.Parse("9e0dd20e-659d-4f37-87be-9b24b7b69b98"),
+                                    EmployeeId = Guid.Parse("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
+                                    TaskName = "go home again",
+                                    TaskDescription = "I know your monster, I know your pain",
+                                    StartTime = DateTime.Parse("2021/4/29"),
+                                    Deadline = DateTime.Parse("2021/5/15")
+                                },
+                                                new EmployeeTask
+                                                {
+                                                    taskId = Guid.Parse("747e7a32-3876-44ce-b85f-dd557b2984d9"),
+                                                    EmployeeId = Guid.Parse("6c561b72-f44b-40ee-ba4b-a77d17aa8fef"),
+                                                    TaskName = "go home2",
+                                                    TaskDescription = "I know your monster, I know your pain",
+                                                    StartTime = DateTime.Parse("2021/4/29"),
+                                                    Deadline = DateTime.Parse("2021/5/15")
+                                                },
+                                                                new EmployeeTask
+                                                                {
+                                                                    taskId = Guid.Parse("98549e15-5596-4d43-9106-0bd2d67bf7c8"),
+                                                                    EmployeeId = Guid.Parse("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"),
+                                                                    TaskName = "go home3",
+                                                                    TaskDescription = "I know your monster, I know your pain",
+                                                                    StartTime = DateTime.Parse("2021/4/29"),
+                                                                    Deadline = DateTime.Parse("2021/5/15")
+                                                                },
+                                                                                new EmployeeTask
+                                                                                {
+                                                                                    taskId = Guid.Parse("84bdba17-e4d6-4b2a-8ade-7d8606eff3ea"),
+                                                                                    EmployeeId = Guid.Parse("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
+                                                                                    TaskName = "go home4",
+                                                                                    TaskDescription = "I know your monster, I know your pain",
+                                                                                    StartTime = DateTime.Parse("2021/4/29"),
+                                                                                    Deadline = DateTime.Parse("2021/5/15")
+                                                                                },
+                                                                                                new EmployeeTask
+                                                                                                {
+                                                                                                    taskId = Guid.Parse("d547664e-249d-4f88-b1db-dcfd0bf3d623"),
+                                                                                                    EmployeeId = Guid.Parse("6c561b72-f44b-40ee-ba4b-a77d17aa8fef"),
+                                                                                                    TaskName = "go home5",
+                                                                                                    TaskDescription = "I know your monster, I know your pain",
+                                                                                                    StartTime = DateTime.Parse("2021/4/29"),
+                                                                                                    Deadline = DateTime.Parse("2021/5/15")
+                                                                                                }
             );
         }
     }

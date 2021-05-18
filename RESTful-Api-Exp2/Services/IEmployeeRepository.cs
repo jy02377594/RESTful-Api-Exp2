@@ -1,4 +1,5 @@
-﻿using RESTful_Api_Exp2.Entities;
+﻿using RESTful_Api_Exp2.DtoParameters;
+using RESTful_Api_Exp2.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace RESTful_Api_Exp2.Services
     {
         // get all employees' info 
         Task<IEnumerable<Employee>> GetEmployeesAsync();
+        Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, EmployeeDtoParameter parameters);
         Task<IEnumerable<Employee>> GetEmployeesAsync(string FirstName, string LastName);
         Task<Employee> GetEmployeesAsync(Guid EmployeeId);
         void AddEmployee(Guid companyId, Employee entity);

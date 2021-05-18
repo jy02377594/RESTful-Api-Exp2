@@ -13,7 +13,10 @@ using RESTful_Api_Exp2.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace RESTful_Api_Exp2.Controllers
 {
@@ -165,11 +168,30 @@ namespace RESTful_Api_Exp2.Controllers
         }
 
         //写一个带查询参数的查询,要注明来自query,默认来自body
-        [HttpGet("search")]
+        [HttpGet("search",Name = nameof(GetTasksBySearch))]
         public async Task<ActionResult<IEnumerable<EmployeeTaskDto>>> GetTasksBySearch([FromQuery] TaskDtoParameters parameters)
         {
             if (parameters == null) return BadRequest();
             var employeeTasks = await _employeeTaskRepository.GetTasksAsync(parameters);
+            //有前一页就创造前一页的uri,没有就为空
+            //因为CreateTasksResponseUri用了Url.Link把datetime加密了，所以这里要解密一下，但是一般情况下，uri的datetime是不直接显示的，这里为了显示前后页的正确uri
+            var previousLink = employeeTasks.HasPrevious ? HttpUtility.UrlDecode(CreateTasksResponseUri(parameters, ResourceUriType.PreviousPage)) : null;
+            var nextLink = employeeTasks.HasNext ? HttpUtility.UrlDecode(CreateTasksResponseUri(parameters, ResourceUriType.NextPage)) : null;
+            //创建一个页码匿名类,没有类名，只是为了使用里面的属性
+            var paginationMetadata = new
+            {
+                totalCount = employeeTasks.TotalCount,
+                pageSize = employeeTasks.PageSize,
+                currentPage = employeeTasks.CurrentPage,
+                totalPage = employeeTasks.TotalPages,
+                previousLink,
+                nextLink
+            };
+            //把匿名类的属性添加到header里，命名为X-Pagination
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata, new JsonSerializerOptions {
+                //不安全的字符会被转义,这里改一下不让转义
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            }));
             var taskDto = _mapper.Map<IEnumerable<EmployeeTaskDto>>(employeeTasks);
 
             return Ok(taskDto);
@@ -228,6 +250,42 @@ namespace RESTful_Api_Exp2.Controllers
             var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
 
             return (ActionResult)options.Value.InvalidModelStateResponseFactory(ControllerContext);
+        }
+
+        //这里用拼接uri，返回的header里能看到翻页前后的uri地址,属于GetTasksBySearch的响应
+        private string CreateTasksResponseUri(TaskDtoParameters parameters, ResourceUriType type)
+        {
+            //PreviousPage and NextPage
+            switch (type)
+            {
+                //前一页
+                case ResourceUriType.PreviousPage:
+                    return Url.Link(nameof(GetTasksBySearch), new
+                    {
+                        pageNumber = parameters.PageNumber - 1,
+                        pageSize = parameters.PageSize,
+                        searchTerm = parameters.SearchTerm,
+                        deadline = parameters.Deadline
+                    }); //Url.Link拼接翻页的uri, 这里一定要带上所有的查询过滤条件(TaskDtoParameters里的),否则生成的uri翻页后的数据就不对了
+
+                case ResourceUriType.NextPage:
+                    return Url.Link(nameof(GetTasksBySearch), new
+                    {
+                        pageNumber = parameters.PageNumber + 1,
+                        pageSize = parameters.PageSize,
+                        searchTerm = parameters.SearchTerm,
+                        deadline = parameters.Deadline
+                    }); //Url.Link拼接翻页的uri
+
+                default:
+                    return Url.Link(nameof(GetTasksBySearch), new
+                    {
+                        pageNumber = parameters.PageNumber,
+                        pageSize = parameters.PageSize,
+                        searchTerm = parameters.SearchTerm,
+                        deadline = parameters.Deadline
+                    }); //Url.Link拼接翻页的uri
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RESTful_Api_Exp2.Data;
+using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,47 @@ namespace RESTful_Api_Exp2.Services
             }
             return await _context.Employees
                 .Where(x => x.FirstName == FirstName && x.LastName == LastName).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, EmployeeDtoParameter parameters)
+        {
+            if (companyId == Guid.Empty) throw new ArgumentNullException(nameof(companyId));
+            //if (string.IsNullOrWhiteSpace(parameters.Gender) && string.IsNullOrWhiteSpace(parameters.Q))
+            //{
+            //    return await _context.Employees
+            //        .Where(x => x.CompanyId == companyId)
+            //        .OrderBy(x => x.EmployeeNo)
+            //        .ToListAsync();
+            //}
+
+            var items = _context.Employees.Where(x => x.CompanyId == companyId);
+
+            if (!string.IsNullOrWhiteSpace(parameters.Q))
+            {
+                parameters.Q = parameters.Q.Trim();
+                items = items.Where(x => x.EmployeeNo.Contains(parameters.Q)
+                || x.FirstName.Contains(parameters.Q)
+                || x.LastName.Contains(parameters.Q));
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.Gender))
+            {
+                parameters.Gender = parameters.Gender.Trim();
+                //替换成枚举里的gender
+                var gender = Enum.Parse<Gender>(parameters.Gender);
+                items = items.Where(x => x.Gender == gender);
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.OrderBy))
+            {
+                if (parameters.OrderBy.ToLowerInvariant() == "employeename")
+                {
+                    items = items.OrderBy(x => x.FirstName).ThenBy(x => x.LastName);
+                }
+            }
+
+            //return await items.OrderBy(x => x.EmployeeNo).ToListAsync();
+            return await items.ToListAsync();
         }
 
         //get an employee by id

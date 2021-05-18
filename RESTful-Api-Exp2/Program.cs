@@ -23,6 +23,7 @@ namespace RESTful_Api_Exp2
                 try {
                     var dbContext = scope.ServiceProvider.GetService<Restful_DbContext>();
                     dbContext.Database.EnsureDeleted();
+                    //先去consloe执行Add-Migration initialMigration,必须删掉之前migrations文件里的所有文件否则不能更新新数据，再执行这里，执行后会改变数据库数据
                     dbContext.Database.Migrate();
                 }
                 catch(Exception e) {

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
 using RESTful_Api_Exp2.Models;
 using RESTful_Api_Exp2.Services;
@@ -125,6 +126,16 @@ namespace RESTful_Api_Exp2.Controllers
 
             var employessDtos = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
             return Ok(employessDtos);
+        }
+
+        [HttpGet("company/{companyId}/order")]
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesWithOrder(Guid companyId, [FromQuery] EmployeeDtoParameter parameters)
+        {
+            if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
+            var employees = await _employeeRepository.GetEmployeesAsync(companyId, parameters);
+
+            var employeesDtos = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
+            return Ok(employeesDtos);
         }
 
 
