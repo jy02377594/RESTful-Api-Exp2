@@ -85,6 +85,9 @@ namespace RESTful_Api_Exp2
             {
                 option.UseSqlite(connectionString: "Data Source = RESTful_api.db");
             });
+
+            //轻量级，生命周期短,用来排序的
+            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

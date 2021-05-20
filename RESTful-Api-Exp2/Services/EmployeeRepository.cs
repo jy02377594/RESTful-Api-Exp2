@@ -2,6 +2,8 @@
 using RESTful_Api_Exp2.Data;
 using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
+using RESTful_Api_Exp2.Helpers;
+using RESTful_Api_Exp2.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +14,12 @@ namespace RESTful_Api_Exp2.Services
     public class EmployeeRepository: IEmployeeRepository
     {
         private readonly Restful_DbContext _context;
+        private readonly IPropertyMappingService _propertyMappingService;
 
-        public EmployeeRepository(Restful_DbContext context)
+        public EmployeeRepository(Restful_DbContext context, IPropertyMappingService propertyMappingService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
         public async Task<IEnumerable<Employee>> GetEmployeesAsync()
@@ -67,13 +71,18 @@ namespace RESTful_Api_Exp2.Services
                 items = items.Where(x => x.Gender == gender);
             }
 
-            if (!string.IsNullOrWhiteSpace(parameters.OrderBy))
+            /*if (!string.IsNullOrWhiteSpace(parameters.OrderBy))
             {
                 if (parameters.OrderBy.ToLowerInvariant() == "employeename")
                 {
                     items = items.OrderBy(x => x.FirstName).ThenBy(x => x.LastName);
                 }
-            }
+            }*/
+
+            //把dictionary取出来
+            var mappingDictionary = _propertyMappingService.GetPropertyMapping<EmployeeDto, Employee>();
+            //使用属性名的字符串来按属性进行排序，有的属性名是lambda表达, 属性映射服务，可以映射Entity多个属性，映射可能翻转顺序。(age asc: dateofbirth desc)
+            items = items.ApplySort(parameters.OrderBy, mappingDictionary);
 
             //return await items.OrderBy(x => x.EmployeeNo).ToListAsync();
             return await items.ToListAsync();
