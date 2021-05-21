@@ -21,6 +21,9 @@ namespace RESTful_Api_Exp2.Models
 
         //如果AddDto和UpdateDto对某个属性的验证不一样，这里可以用抽象方法，再在各自的类里实现这个方法
         public abstract string Introduction { get; set; }
+        public string Country { get; set; }
+        public string Industry { get; set; }
+        public string Product { get; set; }
 
         public ICollection<EmployeeAddDto> Employees { get; set; } = new List<EmployeeAddDto>();//new一下避免空引用异常
 

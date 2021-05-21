@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RESTful_Api_Exp2.Data;
 
 namespace RESTful_Api_Exp2.Migrations
 {
     [DbContext(typeof(Restful_DbContext))]
-    partial class Restful_DbContextModelSnapshot : ModelSnapshot
+    [Migration("20210521050431_initialMigration")]
+    partial class initialMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -232,7 +234,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
-                            StartTime = new DateTime(2021, 5, 21, 0, 7, 10, 773, DateTimeKind.Local).AddTicks(7215),
+                            StartTime = new DateTime(2021, 5, 21, 0, 4, 30, 733, DateTimeKind.Local).AddTicks(7719),
                             TaskDescription = "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs",
                             TaskName = "fix bugs"
                         },

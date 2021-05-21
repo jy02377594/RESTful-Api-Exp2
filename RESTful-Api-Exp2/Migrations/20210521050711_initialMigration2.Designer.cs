@@ -9,8 +9,8 @@ using RESTful_Api_Exp2.Data;
 namespace RESTful_Api_Exp2.Migrations
 {
     [DbContext(typeof(Restful_DbContext))]
-    [Migration("20210513024653_initialMigration")]
-    partial class initialMigration
+    [Migration("20210521050711_initialMigration2")]
+    partial class initialMigration2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,6 +24,16 @@ namespace RESTful_Api_Exp2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Industry")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Introduction")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -34,6 +44,11 @@ namespace RESTful_Api_Exp2.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Product")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
@@ -42,50 +57,74 @@ namespace RESTful_Api_Exp2.Migrations
                         new
                         {
                             Id = new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda14"),
+                            Country = "USA",
+                            Industry = "Software",
                             Introduction = "Good Company",
-                            Name = "WeiRuan"
+                            Name = "WeiRuan",
+                            Product = "VisualStudio"
                         },
                         new
                         {
                             Id = new Guid("6c561b72-f44b-40ee-ba4b-a77d17aa8fff"),
+                            Country = "China",
+                            Industry = "e-commerce",
                             Introduction = "Bad Company",
-                            Name = "PDD"
+                            Name = "PDD",
+                            Product = "Kan yi dao"
                         },
                         new
                         {
                             Id = new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadb8"),
+                            Country = "China",
+                            Industry = "e-commerce",
                             Introduction = "Fuck 996",
-                            Name = "Alibaba"
+                            Name = "Alibaba",
+                            Product = "996 ICU"
                         },
                         new
                         {
                             Id = new Guid("bf6ca130-51af-4e42-aee6-16a2b922c8b8"),
+                            Country = "China",
+                            Industry = "e-commerce",
                             Introduction = "996 icu 007 death",
-                            Name = "DreamCompany1"
+                            Name = "DreamCompany1",
+                            Product = "996 ICU"
                         },
                         new
                         {
                             Id = new Guid("136fa82f-57f7-4479-90cc-8dc4198d0ec1"),
+                            Country = "China",
+                            Industry = "e-commerce",
                             Introduction = "996 icu 007 death",
-                            Name = "DreamCompany2"
+                            Name = "DreamCompany2",
+                            Product = "996 ICU"
                         },
                         new
                         {
                             Id = new Guid("b80d95ba-30fc-4eb9-b138-7b841497b457"),
+                            Country = "China",
+                            Industry = "e-commerce",
                             Introduction = "996 icu 007 death",
-                            Name = "DreamCompany3"
+                            Name = "DreamCompany3",
+                            Product = "996 ICU"
                         },
                         new
                         {
                             Id = new Guid("5f05d00d-11c5-4796-9f86-270ccd9560e0"),
+                            Country = "China",
+                            Industry = "e-commerce",
                             Introduction = "996 icu 007 death",
-                            Name = "DreamCompany4"
+                            Name = "DreamCompany4",
+                            Product = "996 ICU"
                         },
                         new
                         {
                             Id = new Guid("d103dd72-ef31-45d5-a9ff-0b2bd17788a8"),
+                            Country = "China",
+                            Industry = "e-commerce",
                             Introduction = "996 icu 007 death",
-                            Name = "DreamCompany5"
+                            Name = "DreamCompany5",
+                            Product = "996 ICU"
                         });
                 });
 
@@ -195,7 +234,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
-                            StartTime = new DateTime(2021, 5, 12, 21, 46, 52, 867, DateTimeKind.Local).AddTicks(2735),
+                            StartTime = new DateTime(2021, 5, 21, 0, 7, 10, 773, DateTimeKind.Local).AddTicks(7215),
                             TaskDescription = "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs",
                             TaskName = "fix bugs"
                         },
@@ -213,7 +252,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("5ce682ef-bc20-4e11-bce6-12916576698e"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"),
-                            StartTime = new DateTime(2021, 5, 12, 0, 0, 0, 0, DateTimeKind.Local),
+                            StartTime = new DateTime(2021, 5, 21, 0, 0, 0, 0, DateTimeKind.Local),
                             TaskDescription = "make america great again",
                             TaskName = "bullshit"
                         },

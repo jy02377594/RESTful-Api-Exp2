@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\angular-1.8.2\i18n\ngLocale\" />
   </ItemGroup>
 

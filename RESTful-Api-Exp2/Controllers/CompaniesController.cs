@@ -22,6 +22,7 @@ namespace RESTful_Api_Exp2.Controllers
     {
         // container of services, 容器
         public readonly IEmployeeRepository _employeeRepository;
+        private readonly IPropertyMappingService _propertyMappingService;
         public readonly ICompanyRepository _companyRepository;
         public readonly IMapper _mapper;
 
@@ -30,12 +31,13 @@ namespace RESTful_Api_Exp2.Controllers
         /// 符合依赖倒置原则，高层模块不应该依赖低层模块，两者都应该依赖其抽象
         /// </summary>
         /// <param name="companyRepository"></param>
-        public CompaniesController(ICompanyRepository companyRepository, IMapper mapper, IEmployeeRepository employeeRepository)
+        public CompaniesController(ICompanyRepository companyRepository, IMapper mapper, IEmployeeRepository employeeRepository, IPropertyMappingService propertyMappingService)
         {
             //dependency injection           
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
         [HttpGet(Name = nameof(GetCompanies))]
@@ -53,6 +55,7 @@ namespace RESTful_Api_Exp2.Controllers
         [HttpHead]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompaniesWithPage([FromQuery] CompanyDtoParameters parameters)
         {
+            if (!_propertyMappingService.ValidMappingExistsFor<CompanyDto, Company>(parameters.OrderBy)) return BadRequest();
             var companies = await _companyRepository.GetCompaniesAsyncWithPL(parameters);
             var previousLink = companies.HasPrevious ? CreateCompaniesResourceUri(parameters, ResourceUriType.PreviousPage) : null;
             var nextLink = companies.HasNext ? CreateCompaniesResourceUri(parameters, ResourceUriType.NextPage) : null;
@@ -193,6 +196,7 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok();
         }
 
+        //生成翻页后的前后页uri
         private string CreateCompaniesResourceUri(CompanyDtoParameters parameters, ResourceUriType type)
         {
             switch (type)
@@ -203,7 +207,8 @@ namespace RESTful_Api_Exp2.Controllers
                         pageNumber = parameters.PageNumber - 1,
                         pageSize = parameters.PageSize,
                         companyName = parameters.CompanyName,
-                        searchTerm = parameters.SearchTerm
+                        searchTerm = parameters.SearchTerm,
+                        orderBy = parameters.OrderBy
                     });
 
                 case ResourceUriType.NextPage:
@@ -212,7 +217,8 @@ namespace RESTful_Api_Exp2.Controllers
                         pageNumber = parameters.PageNumber + 1,
                         pageSize = parameters.PageSize,
                         companyName = parameters.CompanyName,
-                        searchTerm = parameters.SearchTerm
+                        searchTerm = parameters.SearchTerm,
+                        orderBy = parameters.OrderBy
                     });
 
                 default:
@@ -221,7 +227,8 @@ namespace RESTful_Api_Exp2.Controllers
                         pageNumber = parameters.PageNumber,
                         pageSize = parameters.PageSize,
                         companyName = parameters.CompanyName,
-                        searchTerm = parameters.SearchTerm
+                        searchTerm = parameters.SearchTerm,
+                        orderBy = parameters.OrderBy
                     });
             }
         }

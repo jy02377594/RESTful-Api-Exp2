@@ -9,5 +9,8 @@ namespace RESTful_Api_Exp2.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string Country { get; set; }
+        public string Industry { get; set; }
+        public string Product { get; set; }
     }
 }

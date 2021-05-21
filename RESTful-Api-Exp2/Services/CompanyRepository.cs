@@ -3,6 +3,7 @@ using RESTful_Api_Exp2.Data;
 using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
 using RESTful_Api_Exp2.Helpers;
+using RESTful_Api_Exp2.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace RESTful_Api_Exp2.Services
     public class CompanyRepository : ICompanyRepository
     {
         private readonly Restful_DbContext _context;
+        private readonly IPropertyMappingService _propertyMappingService; //依赖与抽象而不是实现，这里依赖注入和下面的容器都必须是接口类型
 
-        public CompanyRepository(Restful_DbContext context)
+        public CompanyRepository(Restful_DbContext context, IPropertyMappingService propertyMappingService)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
         //用查询参数来模糊查询有关的公司，这里只根据Name和Introduction来查询，如果这两个字段包含查询参数就返回相应的公司数据
@@ -44,7 +47,7 @@ namespace RESTful_Api_Exp2.Services
             //IQeryable延迟执行，到下面tolist才会执行查询语句到数据库
             return await queryExpression.ToListAsync();
         }
-
+        //with pagelist
         public async Task<PagedList<Company>> GetCompaniesAsyncWithPL(CompanyDtoParameters parameters)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
@@ -62,6 +65,10 @@ namespace RESTful_Api_Exp2.Services
                 parameters.SearchTerm = parameters.SearchTerm.Trim();
                 queryExpression = queryExpression.Where(x => x.Name.Contains(parameters.SearchTerm) || x.Introduction.Contains(parameters.SearchTerm));
             }
+
+            var mappingDictionary = _propertyMappingService.GetPropertyMapping<CompanyDto, Company>();
+
+            queryExpression = queryExpression.ApplySort(parameters.OrderBy, mappingDictionary);
 
             return await PagedList<Company>.CreateAsync(queryExpression, parameters.PageNumber, parameters.PageSize);
         }

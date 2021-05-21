@@ -22,8 +22,11 @@ namespace RESTful_Api_Exp2.Data
         {
             modelBuilder.Entity<Company>().Property(x => x.Name).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Company>().Property(x => x.Introduction).IsRequired().HasMaxLength(500);
+            modelBuilder.Entity<Company>().Property(x => x.Country).IsRequired().HasMaxLength(50);
+            modelBuilder.Entity<Company>().Property(x => x.Industry).IsRequired().HasMaxLength(100);
+            modelBuilder.Entity<Company>().Property(x => x.Product).IsRequired().HasMaxLength(100);
 
-            modelBuilder.Entity<Employee>().Property(x => x.EmployeeNo).IsRequired().HasMaxLength(20);
+        modelBuilder.Entity<Employee>().Property(x => x.EmployeeNo).IsRequired().HasMaxLength(20);
             modelBuilder.Entity<Employee>().Property(x => x.FirstName).IsRequired().HasMaxLength(50);
             modelBuilder.Entity<Employee>().Property(x => x.LastName).IsRequired().HasMaxLength(50);
 
@@ -48,49 +51,73 @@ namespace RESTful_Api_Exp2.Data
                 {
                     Id = Guid.Parse("a3a461ea-e692-6f54-2f3e-f076a08dda14"),
                     Name = "WeiRuan",
-                    Introduction = "Good Company"
+                    Introduction = "Good Company",
+                    Country = "USA",
+                    Industry = "Software",
+                    Product = "VisualStudio"
                 },
                 new Company
                 {
                     Id = Guid.Parse("6c561b72-f44b-40ee-ba4b-a77d17aa8fff"),
                     Name = "PDD",
-                    Introduction = "Bad Company"
+                    Introduction = "Bad Company",
+                    Country = "China",
+                    Industry = "e-commerce",
+                    Product = "Kan yi dao"
                 },
                 new Company
                 {
                     Id = Guid.Parse("a06b7e5d-83e7-473d-ad40-79d9fadfadb8"),
                     Name = "Alibaba",
-                    Introduction = "Fuck 996"
+                    Introduction = "Fuck 996",
+                    Country = "China",
+                    Industry = "e-commerce",
+                    Product = "996 ICU"
                 },
                 new Company
                 {
                     Id = Guid.Parse("bf6ca130-51af-4e42-aee6-16a2b922c8b8"),
                     Name = "DreamCompany1",
-                    Introduction = "996 icu 007 death"
+                    Introduction = "996 icu 007 death",
+                    Country = "China",
+                    Industry = "e-commerce",
+                    Product = "996 ICU"
                 },
                 new Company
                 {
                     Id = Guid.Parse("136fa82f-57f7-4479-90cc-8dc4198d0ec1"),
                     Name = "DreamCompany2",
-                    Introduction = "996 icu 007 death"
+                    Introduction = "996 icu 007 death",
+                    Country = "China",
+                    Industry = "e-commerce",
+                    Product = "996 ICU"
                 },
                 new Company
                 {
                     Id = Guid.Parse("b80d95ba-30fc-4eb9-b138-7b841497b457"),
                     Name = "DreamCompany3",
-                    Introduction = "996 icu 007 death"
+                    Introduction = "996 icu 007 death",
+                    Country = "China",
+                    Industry = "e-commerce",
+                    Product = "996 ICU"
                 },
                 new Company
                 {
                     Id = Guid.Parse("5f05d00d-11c5-4796-9f86-270ccd9560e0"),
                     Name = "DreamCompany4",
-                    Introduction = "996 icu 007 death"
+                    Introduction = "996 icu 007 death",
+                    Country = "China",
+                    Industry = "e-commerce",
+                    Product = "996 ICU"
                 },
                 new Company
                 {
                     Id = Guid.Parse("d103dd72-ef31-45d5-a9ff-0b2bd17788a8"),
                     Name = "DreamCompany5",
-                    Introduction = "996 icu 007 death"
+                    Introduction = "996 icu 007 death",
+                    Country = "China",
+                    Industry = "e-commerce",
+                    Product = "996 ICU"
                 }
                 );
 

@@ -13,7 +13,10 @@ namespace RESTful_Api_Exp2.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Introduction = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false)
+                    Introduction = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
+                    Country = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Industry = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Product = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,43 +70,43 @@ namespace RESTful_Api_Exp2.Migrations
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda14"), "Good Company", "WeiRuan" });
+                columns: new[] { "Id", "Country", "Industry", "Introduction", "Name", "Product" },
+                values: new object[] { new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda14"), "USA", "Software", "Good Company", "WeiRuan", "VisualStudio" });
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("6c561b72-f44b-40ee-ba4b-a77d17aa8fff"), "Bad Company", "PDD" });
+                columns: new[] { "Id", "Country", "Industry", "Introduction", "Name", "Product" },
+                values: new object[] { new Guid("6c561b72-f44b-40ee-ba4b-a77d17aa8fff"), "China", "e-commerce", "Bad Company", "PDD", "Kan yi dao" });
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadb8"), "Fuck 996", "Alibaba" });
+                columns: new[] { "Id", "Country", "Industry", "Introduction", "Name", "Product" },
+                values: new object[] { new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadb8"), "China", "e-commerce", "Fuck 996", "Alibaba", "996 ICU" });
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("bf6ca130-51af-4e42-aee6-16a2b922c8b8"), "996 icu 007 death", "DreamCompany1" });
+                columns: new[] { "Id", "Country", "Industry", "Introduction", "Name", "Product" },
+                values: new object[] { new Guid("bf6ca130-51af-4e42-aee6-16a2b922c8b8"), "China", "e-commerce", "996 icu 007 death", "DreamCompany1", "996 ICU" });
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("136fa82f-57f7-4479-90cc-8dc4198d0ec1"), "996 icu 007 death", "DreamCompany2" });
+                columns: new[] { "Id", "Country", "Industry", "Introduction", "Name", "Product" },
+                values: new object[] { new Guid("136fa82f-57f7-4479-90cc-8dc4198d0ec1"), "China", "e-commerce", "996 icu 007 death", "DreamCompany2", "996 ICU" });
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("b80d95ba-30fc-4eb9-b138-7b841497b457"), "996 icu 007 death", "DreamCompany3" });
+                columns: new[] { "Id", "Country", "Industry", "Introduction", "Name", "Product" },
+                values: new object[] { new Guid("b80d95ba-30fc-4eb9-b138-7b841497b457"), "China", "e-commerce", "996 icu 007 death", "DreamCompany3", "996 ICU" });
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("5f05d00d-11c5-4796-9f86-270ccd9560e0"), "996 icu 007 death", "DreamCompany4" });
+                columns: new[] { "Id", "Country", "Industry", "Introduction", "Name", "Product" },
+                values: new object[] { new Guid("5f05d00d-11c5-4796-9f86-270ccd9560e0"), "China", "e-commerce", "996 icu 007 death", "DreamCompany4", "996 ICU" });
 
             migrationBuilder.InsertData(
                 table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("d103dd72-ef31-45d5-a9ff-0b2bd17788a8"), "996 icu 007 death", "DreamCompany5" });
+                columns: new[] { "Id", "Country", "Industry", "Introduction", "Name", "Product" },
+                values: new object[] { new Guid("d103dd72-ef31-45d5-a9ff-0b2bd17788a8"), "China", "e-commerce", "996 icu 007 death", "DreamCompany5", "996 ICU" });
 
             migrationBuilder.InsertData(
                 table: "Employees",
@@ -123,7 +126,7 @@ namespace RESTful_Api_Exp2.Migrations
             migrationBuilder.InsertData(
                 table: "EmployeeTasks",
                 columns: new[] { "taskId", "Deadline", "EmployeeId", "StartTime", "TaskDescription", "TaskName" },
-                values: new object[] { new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"), new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"), new DateTime(2021, 5, 12, 21, 46, 52, 867, DateTimeKind.Local).AddTicks(2735), "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs", "fix bugs" });
+                values: new object[] { new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"), new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"), new DateTime(2021, 5, 21, 0, 4, 30, 733, DateTimeKind.Local).AddTicks(7719), "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs", "fix bugs" });
 
             migrationBuilder.InsertData(
                 table: "EmployeeTasks",
@@ -163,7 +166,7 @@ namespace RESTful_Api_Exp2.Migrations
             migrationBuilder.InsertData(
                 table: "EmployeeTasks",
                 columns: new[] { "taskId", "Deadline", "EmployeeId", "StartTime", "TaskDescription", "TaskName" },
-                values: new object[] { new Guid("5ce682ef-bc20-4e11-bce6-12916576698e"), new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"), new DateTime(2021, 5, 12, 0, 0, 0, 0, DateTimeKind.Local), "make america great again", "bullshit" });
+                values: new object[] { new Guid("5ce682ef-bc20-4e11-bce6-12916576698e"), new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"), new DateTime(2021, 5, 21, 0, 0, 0, 0, DateTimeKind.Local), "make america great again", "bullshit" });
 
             migrationBuilder.InsertData(
                 table: "EmployeeTasks",
