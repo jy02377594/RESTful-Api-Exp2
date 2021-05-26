@@ -88,6 +88,7 @@ namespace RESTful_Api_Exp2
 
             //轻量级，生命周期短,用来排序的
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
+            services.AddTransient<IPropertyMappingServiceForTask, PropertyMappingServiceForTask>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

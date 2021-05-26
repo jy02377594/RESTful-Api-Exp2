@@ -3,6 +3,7 @@ using RESTful_Api_Exp2.Data;
 using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
 using RESTful_Api_Exp2.Helpers;
+using RESTful_Api_Exp2.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,13 @@ namespace RESTful_Api_Exp2.Services
     public class EmployeeTaskRepository: IEmployeeTaskRepository
     {
         private readonly Restful_DbContext _context;
+        private readonly IPropertyMappingServiceForTask _propertyMappingServiceForTask;
 
-        public EmployeeTaskRepository(Restful_DbContext context)
+        //再次犯错，这里必须要注入接口类型propertyMappingServiceForTask，容器里必须是接口类型或者抽象服务类
+        public EmployeeTaskRepository(Restful_DbContext context, IPropertyMappingServiceForTask propertyMappingServiceForTask)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
+            _propertyMappingServiceForTask = propertyMappingServiceForTask ?? throw new ArgumentNullException(nameof(propertyMappingServiceForTask));
         }
         //get all tasks
         public async Task<IEnumerable<EmployeeTask>> GetTasksAsync()
@@ -66,8 +70,8 @@ namespace RESTful_Api_Exp2.Services
             var queryExpression = _context.EmployeeTasks as IQueryable<EmployeeTask>;
 
             //判断datetime类型为空就看它和最小值相等与否，最小值是0001-01-01
-            if (string.IsNullOrWhiteSpace(parameters.SearchTerm) && parameters.Deadline == DateTime.MinValue)
-                return await PagedListForTask<EmployeeTask>.CreateAsnyc(queryExpression, parameters.PageNumber, parameters.PageSize);
+            //if (string.IsNullOrWhiteSpace(parameters.SearchTerm) && parameters.Deadline == DateTime.MinValue)
+            //    return await PagedListForTask<EmployeeTask>.CreateAsnyc(queryExpression, parameters.PageNumber, parameters.PageSize);
 
             //这里不能转成IEnumerable因为后面不能转成异步list,而IQueryable相当于生成不马上执行的sql查询语句，可以转成异步list
             //var queryExpression = _context.EmployeeTasks as IEnumerable<EmployeeTask>;
@@ -82,6 +86,9 @@ namespace RESTful_Api_Exp2.Services
                 parameters.SearchTerm = parameters.SearchTerm.Trim();
                 queryExpression = queryExpression.Where(x => x.TaskName.Contains(parameters.SearchTerm) || x.TaskDescription.Contains(parameters.SearchTerm));
             }
+            //根据排序字符串获取对应的排序属性
+            var mappingDictionary = _propertyMappingServiceForTask.GetPropertyMapping<EmployeeTaskDto, EmployeeTask>();
+            queryExpression = queryExpression.ApplySortForTask(parameters.OrderBy, mappingDictionary);
 
             return await PagedListForTask<EmployeeTask>.CreateAsnyc(queryExpression, parameters.PageNumber, parameters.PageSize);
         }

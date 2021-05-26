@@ -19,7 +19,9 @@ namespace RESTful_Api_Exp2.DtoParameters
         public int PageSize {
             get => _pageSize;
             set => _pageSize = (value > MaxPageSize ? MaxPageSize : value);
-        } 
+        }
+
+        public string OrderBy { get; set; } = "TaskName";
 
     }
 }
