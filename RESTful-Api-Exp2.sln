@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RESTful-Api-Exp2", "RESTful-Api-Exp2\RESTful-Api-Exp2.csproj", "{25DA8761-6A85-4E60-9826-FB9C83D75FD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTfulapiTest", "RESTfulapiTest\RESTfulapiTest.csproj", "{E5162EDE-305B-407E-90D0-A1D51C04F472}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RESTfulapiTest", "RESTfulapiTest\RESTfulapiTest.csproj", "{E5162EDE-305B-407E-90D0-A1D51C04F472}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularExp", "AngularExp\AngularExp.csproj", "{942BEB39-FB66-41DC-BFCE-71A5FCA68AAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{E5162EDE-305B-407E-90D0-A1D51C04F472}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5162EDE-305B-407E-90D0-A1D51C04F472}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5162EDE-305B-407E-90D0-A1D51C04F472}.Release|Any CPU.Build.0 = Release|Any CPU
+		{942BEB39-FB66-41DC-BFCE-71A5FCA68AAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{942BEB39-FB66-41DC-BFCE-71A5FCA68AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{942BEB39-FB66-41DC-BFCE-71A5FCA68AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{942BEB39-FB66-41DC-BFCE-71A5FCA68AAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
