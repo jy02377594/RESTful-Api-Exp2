@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using RESTful_Api_Exp2.Data;
 using RESTful_Api_Exp2.Services;
 using System;
+using System.IO;
 
 namespace RESTful_Api_Exp2
 {
@@ -117,7 +119,12 @@ namespace RESTful_Api_Exp2
 
             //…Ë÷√∆ º“≥ Configure the app to serve static files and enable default file mapping.
             app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            { 
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(),"EmployeePhoto")),
+                RequestPath="/EmployeePhoto"
+            });
 
             app.UseHttpsRedirection();
 

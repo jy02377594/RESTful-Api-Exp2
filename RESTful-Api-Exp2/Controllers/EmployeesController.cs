@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -11,7 +11,7 @@ using RESTful_Api_Exp2.Models;
 using RESTful_Api_Exp2.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace RESTful_Api_Exp2.Controllers
@@ -29,14 +29,16 @@ namespace RESTful_Api_Exp2.Controllers
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IEmployeeTaskRepository _employeeTaskRepository;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _env;
 
         //这里要用到automapper做映射，所以要依赖注入IMapper接口
-        public EmployeesController(IEmployeeRepository employeeRepository, IMapper mapper, ICompanyRepository companyRepository, IEmployeeTaskRepository employeeTaskRepository)
+        public EmployeesController(IEmployeeRepository employeeRepository, IMapper mapper, ICompanyRepository companyRepository, IEmployeeTaskRepository employeeTaskRepository, IWebHostEnvironment env)
         {
             _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
             _employeeTaskRepository = employeeTaskRepository ?? throw new ArgumentNullException(nameof(employeeTaskRepository));
+            _env = env ?? throw new ArgumentNullException(nameof(env));
         }
         /// <summary>
         /// 如果返回类型可知,更清晰,能用ActionResult尽量不用IActionResult
@@ -93,7 +95,7 @@ namespace RESTful_Api_Exp2.Controllers
         {
             var employees = await _employeeRepository.GetEmployeesAsync();
             var employeDtos = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
-            
+
             return Ok(employeDtos);
         }
 
@@ -119,7 +121,7 @@ namespace RESTful_Api_Exp2.Controllers
         [HttpGet]
         [Route(template: "company/{companyId}", Name = nameof(GetEmployeesForCompany))]
         //gender没有来自route，所以只能来自query,用来过滤, (Name = "gender") 可以不加，加了代表请求的时候指定query参数名, q表示搜索，查询
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId,[FromQuery(Name = "gender")] string genderDisplay, string q)
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId, [FromQuery(Name = "gender")] string genderDisplay, string q)
         {
             if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
             var employees = await _companyRepository.GetEmployeesAsync(companyId, genderDisplay, q);
@@ -153,7 +155,7 @@ namespace RESTful_Api_Exp2.Controllers
             var returnDto = _mapper.Map<EmployeeDto>(entity);
 
             return CreatedAtRoute(nameof(GetEmployeesForCompany), routeValues: new
-            { 
+            {
                 companyId = companyId,
                 employeeId = returnDto.Id
             }, value: returnDto);
@@ -228,7 +230,7 @@ namespace RESTful_Api_Exp2.Controllers
                 {
                     companyId = companyId,
                     employeeId = dtoToReturn.Id
-                }, value: dtoToReturn); 
+                }, value: dtoToReturn);
 
             }
 
@@ -268,12 +270,59 @@ namespace RESTful_Api_Exp2.Controllers
             return NoContent();
         }
 
+        //upload file to Service with a path
+        [HttpPost("SaveFile")]
+        public async Task<IActionResult> SaveFile()
+        {
+            try
+            {
+                var httpRequest = Request.Form;
+                var postedFile = httpRequest.Files[0];
+                string fileName = postedFile.FileName;
+                var physicalPath = _env.ContentRootPath + "/EmployeePhoto/" + fileName;
+                using (var stream = new FileStream(physicalPath, FileMode.Create))
+                {
+                    postedFile.CopyTo(stream);
+                }
+                await _employeeRepository.SaveAsync();
+                return Ok(fileName);
+            }
+            catch (Exception e)
+            {
+                if (e.GetType().Name != "")
+                {
+                    throw new Exception(nameof(e));
+                }
+                else return BadRequest();
+            }
+        }
+        //return filename
+        /*public JsonResult SaveFile()
+        {
+            try {
+                var httpRequest = Request.Form;
+                var postedFile = httpRequest.Files[0];
+                string filename = postedFile.FileName;
+                var physicalPath = _env.ContentRootPath + "/EmployeePhoto/" + filename;
+                using (var stream = new FileStream(physicalPath, FileMode.Create))
+                {
+                    postedFile.CopyTo(stream);
+                }
+
+                return new JsonResult(filename);
+            }
+            catch (Exception)
+            {
+                return new JsonResult("anonymous.png");
+            }
+        }*/
+
 
         public override ActionResult ValidationProblem(ModelStateDictionary modelStateDictionary)
         {
             var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
 
-            return (ActionResult) options.Value.InvalidModelStateResponseFactory(ControllerContext);
+            return (ActionResult)options.Value.InvalidModelStateResponseFactory(ControllerContext);
         }
     }
 }

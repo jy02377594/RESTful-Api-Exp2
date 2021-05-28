@@ -17,6 +17,7 @@ namespace RESTful_Api_Exp2.Entities
         [DataType(DataType.Date, ErrorMessage = "The HiredDate Must be a Date Type")]
         public DateTime HiredDate { get; set; }
         public ICollection<EmployeeTask> Tasklist { get; set; }
+        public string PhotoFileName { get; set; } = "";
         public Company Company { get; set; } //To build relationship between two tables
     }
 }

@@ -15,5 +15,6 @@ namespace RESTful_Api_Exp2.Models
         public string LastName { get; set; }
         public Gender Gender { get; set; }
         public DateTime HiredDate { get; set; }
+        public string PhotoFileName { get; set; } = "";
     }
 }

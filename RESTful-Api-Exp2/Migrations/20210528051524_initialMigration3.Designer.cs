@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RESTful_Api_Exp2.Data;
 
 namespace RESTful_Api_Exp2.Migrations
 {
     [DbContext(typeof(Restful_DbContext))]
-    partial class Restful_DbContextModelSnapshot : ModelSnapshot
+    [Migration("20210528051524_initialMigration3")]
+    partial class initialMigration3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
