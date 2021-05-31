@@ -23,6 +23,7 @@ namespace RESTful_Api_Exp2.Controllers
         // container of services, 容器
         public readonly IEmployeeRepository _employeeRepository;
         private readonly IPropertyMappingService _propertyMappingService;
+        private readonly IPropertyCheckerService _propertyCheckerService;
         public readonly ICompanyRepository _companyRepository;
         public readonly IMapper _mapper;
 
@@ -31,13 +32,15 @@ namespace RESTful_Api_Exp2.Controllers
         /// 符合依赖倒置原则，高层模块不应该依赖低层模块，两者都应该依赖其抽象
         /// </summary>
         /// <param name="companyRepository"></param>
-        public CompaniesController(ICompanyRepository companyRepository, IMapper mapper, IEmployeeRepository employeeRepository, IPropertyMappingService propertyMappingService)
+        public CompaniesController(ICompanyRepository companyRepository, IMapper mapper, IEmployeeRepository employeeRepository, 
+            IPropertyMappingService propertyMappingService, IPropertyCheckerService propertyCheckerService)
         {
             //dependency injection           
             _companyRepository = companyRepository ?? throw new ArgumentNullException(nameof(companyRepository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _employeeRepository = employeeRepository ?? throw new ArgumentNullException(nameof(employeeRepository));
             _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
+            _propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
         }
 
         [HttpGet(Name = nameof(GetCompanies))]
@@ -53,9 +56,11 @@ namespace RESTful_Api_Exp2.Controllers
 
         [HttpGet("GetCompanyWithPage", Name = nameof(GetCompaniesWithPage))]
         [HttpHead]
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompaniesWithPage([FromQuery] CompanyDtoParameters parameters)
+        public async Task<IActionResult> GetCompaniesWithPage([FromQuery] CompanyDtoParameters parameters)
         {
             if (!_propertyMappingService.ValidMappingExistsFor<CompanyDto, Company>(parameters.OrderBy)) return BadRequest();
+
+            if (!_propertyCheckerService.TypeHasProperties<CompanyDto>(parameters.Fields)) return BadRequest();
             var companies = await _companyRepository.GetCompaniesAsyncWithPL(parameters);
             var previousLink = companies.HasPrevious ? CreateCompaniesResourceUri(parameters, ResourceUriType.PreviousPage) : null;
             var nextLink = companies.HasNext ? CreateCompaniesResourceUri(parameters, ResourceUriType.NextPage) : null;
@@ -76,12 +81,13 @@ namespace RESTful_Api_Exp2.Controllers
             }));
             var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
-            return Ok(companyDtos);
+            return Ok(companyDtos.ShapeData(parameters.Fields));
         }
 
         [HttpGet(template: "{companyId}", Name = nameof(GetCompany))]
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany(Guid companyId)
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany(Guid companyId, string fields)
         {
+            if (!_propertyCheckerService.TypeHasProperties<CompanyDto>(fields)) return BadRequest();
             var company = await _companyRepository.GetCompaniesAsync(companyId);
             if (company == null) return NotFound();
             //var companyDtos = new List<CompanyDto>();
@@ -92,7 +98,7 @@ namespace RESTful_Api_Exp2.Controllers
             //});
             var companyDtos = _mapper.Map<CompanyDto>(company);
 
-            return Ok(companyDtos);
+            return Ok(companyDtos.ShapeData(fields));
         }
 
         [HttpGet]
@@ -204,6 +210,7 @@ namespace RESTful_Api_Exp2.Controllers
                 case ResourceUriType.PreviousPage:
                     return Url.Link(nameof(GetCompaniesWithPage), new
                     {
+                        fields = parameters.Fields,
                         pageNumber = parameters.PageNumber - 1,
                         pageSize = parameters.PageSize,
                         companyName = parameters.CompanyName,
@@ -214,6 +221,7 @@ namespace RESTful_Api_Exp2.Controllers
                 case ResourceUriType.NextPage:
                     return Url.Link(nameof(GetCompaniesWithPage), new
                     {
+                        fields = parameters.Fields,
                         pageNumber = parameters.PageNumber + 1,
                         pageSize = parameters.PageSize,
                         companyName = parameters.CompanyName,
@@ -224,6 +232,7 @@ namespace RESTful_Api_Exp2.Controllers
                 default:
                     return Url.Link(nameof(GetCompaniesWithPage), new
                     {
+                        fields = parameters.Fields,
                         pageNumber = parameters.PageNumber,
                         pageSize = parameters.PageSize,
                         companyName = parameters.CompanyName,

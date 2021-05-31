@@ -29,6 +29,6 @@ namespace RESTful_Api_Exp2.DtoParameters
         }
 
         public string OrderBy { get; set; } = "Name";
-
+        public string Fields { get; set; }
     }
 }
