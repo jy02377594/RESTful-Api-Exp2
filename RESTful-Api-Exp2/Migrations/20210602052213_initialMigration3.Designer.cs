@@ -9,8 +9,8 @@ using RESTful_Api_Exp2.Data;
 namespace RESTful_Api_Exp2.Migrations
 {
     [DbContext(typeof(Restful_DbContext))]
-    [Migration("20210521050431_initialMigration")]
-    partial class initialMigration
+    [Migration("20210602052213_initialMigration3")]
+    partial class initialMigration3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,17 +25,14 @@ namespace RESTful_Api_Exp2.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Industry")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Introduction")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
@@ -45,7 +42,6 @@ namespace RESTful_Api_Exp2.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Product")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
@@ -158,6 +154,9 @@ namespace RESTful_Api_Exp2.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PhotoFileName")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
@@ -173,7 +172,8 @@ namespace RESTful_Api_Exp2.Migrations
                             FirstName = "Xiaopeng",
                             Gender = 1,
                             HiredDate = new DateTime(2021, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastName = "Luo"
+                            LastName = "Luo",
+                            PhotoFileName = ""
                         },
                         new
                         {
@@ -183,7 +183,8 @@ namespace RESTful_Api_Exp2.Migrations
                             FirstName = "Guanxi",
                             Gender = 1,
                             HiredDate = new DateTime(2015, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastName = "Chen"
+                            LastName = "Chen",
+                            PhotoFileName = ""
                         },
                         new
                         {
@@ -193,7 +194,8 @@ namespace RESTful_Api_Exp2.Migrations
                             FirstName = "Donald",
                             Gender = 1,
                             HiredDate = new DateTime(2021, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastName = "Trump"
+                            LastName = "Trump",
+                            PhotoFileName = ""
                         });
                 });
 
@@ -234,7 +236,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
-                            StartTime = new DateTime(2021, 5, 21, 0, 4, 30, 733, DateTimeKind.Local).AddTicks(7719),
+                            StartTime = new DateTime(2021, 6, 2, 0, 22, 13, 39, DateTimeKind.Local).AddTicks(3136),
                             TaskDescription = "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs",
                             TaskName = "fix bugs"
                         },
@@ -252,7 +254,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("5ce682ef-bc20-4e11-bce6-12916576698e"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"),
-                            StartTime = new DateTime(2021, 5, 21, 0, 0, 0, 0, DateTimeKind.Local),
+                            StartTime = new DateTime(2021, 6, 2, 0, 0, 0, 0, DateTimeKind.Local),
                             TaskDescription = "make america great again",
                             TaskName = "bullshit"
                         },

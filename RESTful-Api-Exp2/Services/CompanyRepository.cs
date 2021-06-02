@@ -182,9 +182,11 @@ namespace RESTful_Api_Exp2.Services
         { 
            //这里不用谢，EF core 会追踪字段变化，最后执行SaveAsync保存
         }
-        public void DeleteCompany()
+        public void DeleteCompany(Company company)
         {
-            
+            if (company == null) throw new ArgumentNullException(nameof(company));
+
+            _context.Companies.Remove(company);
         }
 
         public async Task<bool> SaveAsync()

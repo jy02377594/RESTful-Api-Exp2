@@ -13,10 +13,10 @@ namespace RESTful_Api_Exp2.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Introduction = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
-                    Country = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Industry = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Product = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
+                    Introduction = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    Country = table.Column<string>(type: "TEXT", maxLength: 50, nullable: true),
+                    Industry = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true),
+                    Product = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -33,7 +33,8 @@ namespace RESTful_Api_Exp2.Migrations
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Gender = table.Column<int>(type: "INTEGER", nullable: false),
-                    HiredDate = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    HiredDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    PhotoFileName = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -110,23 +111,23 @@ namespace RESTful_Api_Exp2.Migrations
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "Id", "CompanyId", "EmployeeNo", "FirstName", "Gender", "HiredDate", "LastName" },
-                values: new object[] { new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"), new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda14"), "00001", "Xiaopeng", 1, new DateTime(2021, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "Luo" });
+                columns: new[] { "Id", "CompanyId", "EmployeeNo", "FirstName", "Gender", "HiredDate", "LastName", "PhotoFileName" },
+                values: new object[] { new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"), new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda14"), "00001", "Xiaopeng", 1, new DateTime(2021, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "Luo", "" });
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "Id", "CompanyId", "EmployeeNo", "FirstName", "Gender", "HiredDate", "LastName" },
-                values: new object[] { new Guid("6c561b72-f44b-40ee-ba4b-a77d17aa8fef"), new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda14"), "00002", "Guanxi", 1, new DateTime(2015, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "Chen" });
+                columns: new[] { "Id", "CompanyId", "EmployeeNo", "FirstName", "Gender", "HiredDate", "LastName", "PhotoFileName" },
+                values: new object[] { new Guid("6c561b72-f44b-40ee-ba4b-a77d17aa8fef"), new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda14"), "00002", "Guanxi", 1, new DateTime(2015, 3, 23, 0, 0, 0, 0, DateTimeKind.Unspecified), "Chen", "" });
 
             migrationBuilder.InsertData(
                 table: "Employees",
-                columns: new[] { "Id", "CompanyId", "EmployeeNo", "FirstName", "Gender", "HiredDate", "LastName" },
-                values: new object[] { new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"), new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadb8"), "00003", "Donald", 1, new DateTime(2021, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "Trump" });
+                columns: new[] { "Id", "CompanyId", "EmployeeNo", "FirstName", "Gender", "HiredDate", "LastName", "PhotoFileName" },
+                values: new object[] { new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"), new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadb8"), "00003", "Donald", 1, new DateTime(2021, 4, 28, 0, 0, 0, 0, DateTimeKind.Unspecified), "Trump", "" });
 
             migrationBuilder.InsertData(
                 table: "EmployeeTasks",
                 columns: new[] { "taskId", "Deadline", "EmployeeId", "StartTime", "TaskDescription", "TaskName" },
-                values: new object[] { new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"), new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"), new DateTime(2021, 5, 21, 0, 4, 30, 733, DateTimeKind.Local).AddTicks(7719), "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs", "fix bugs" });
+                values: new object[] { new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"), new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"), new DateTime(2021, 6, 1, 23, 58, 33, 130, DateTimeKind.Local).AddTicks(3406), "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs", "fix bugs" });
 
             migrationBuilder.InsertData(
                 table: "EmployeeTasks",
@@ -166,7 +167,7 @@ namespace RESTful_Api_Exp2.Migrations
             migrationBuilder.InsertData(
                 table: "EmployeeTasks",
                 columns: new[] { "taskId", "Deadline", "EmployeeId", "StartTime", "TaskDescription", "TaskName" },
-                values: new object[] { new Guid("5ce682ef-bc20-4e11-bce6-12916576698e"), new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"), new DateTime(2021, 5, 21, 0, 0, 0, 0, DateTimeKind.Local), "make america great again", "bullshit" });
+                values: new object[] { new Guid("5ce682ef-bc20-4e11-bce6-12916576698e"), new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"), new DateTime(2021, 6, 1, 0, 0, 0, 0, DateTimeKind.Local), "make america great again", "bullshit" });
 
             migrationBuilder.InsertData(
                 table: "EmployeeTasks",

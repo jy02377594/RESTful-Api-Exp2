@@ -23,7 +23,7 @@ namespace RESTful_Api_Exp2.Services
         void AddCompany(Company company);
         void AddCompany(Guid companyId, Company company);
         void UpdateCompany(Company company);
-        void DeleteCompany();
+        void DeleteCompany(Company company);
 
         Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, string genderDisplay, string q);
         Task<bool> SaveAsync();

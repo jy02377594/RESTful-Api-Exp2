@@ -23,17 +23,14 @@ namespace RESTful_Api_Exp2.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Country")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Industry")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Introduction")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
@@ -43,7 +40,6 @@ namespace RESTful_Api_Exp2.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Product")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
@@ -238,7 +234,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("c2e5433f-0b26-45ca-9d71-7c5e54af6617"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a3a461ea-e692-6f54-2f3e-f076a08dda15"),
-                            StartTime = new DateTime(2021, 5, 28, 0, 15, 23, 869, DateTimeKind.Local).AddTicks(2826),
+                            StartTime = new DateTime(2021, 6, 2, 0, 22, 13, 39, DateTimeKind.Local).AddTicks(3136),
                             TaskDescription = "fixxxxxxxxxxxxxxxxxxxxxxx buggggggggggggggggs",
                             TaskName = "fix bugs"
                         },
@@ -256,7 +252,7 @@ namespace RESTful_Api_Exp2.Migrations
                             taskId = new Guid("5ce682ef-bc20-4e11-bce6-12916576698e"),
                             Deadline = new DateTime(2021, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmployeeId = new Guid("a06b7e5d-83e7-473d-ad40-79d9fadfadc8"),
-                            StartTime = new DateTime(2021, 5, 28, 0, 0, 0, 0, DateTimeKind.Local),
+                            StartTime = new DateTime(2021, 6, 2, 0, 0, 0, 0, DateTimeKind.Local),
                             TaskDescription = "make america great again",
                             TaskName = "bullshit"
                         },

@@ -130,7 +130,7 @@ namespace RESTful_Api_Exp2.Controllers
             return Ok(employessDtos);
         }
 
-        [HttpGet("company/{companyId}/order")]
+        [HttpGet("company/{companyId}/order", Name = nameof(GetEmployeesWithOrder))]
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesWithOrder(Guid companyId, [FromQuery] EmployeeDtoParameter parameters)
         {
             if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
@@ -142,7 +142,7 @@ namespace RESTful_Api_Exp2.Controllers
 
 
         //[HttpPost(template:"{companyId}")]
-        [HttpPost(template: "{companyId}")]
+        [HttpPost(template: "{companyId}", Name = nameof(CreateEmployeeForCompany))]
         public async Task<ActionResult<EmployeeDto>> CreateEmployeeForCompany(Guid companyId, EmployeeAddDto employee)
         {
             if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();

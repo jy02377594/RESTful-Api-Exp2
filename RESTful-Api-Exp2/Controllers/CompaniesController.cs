@@ -17,7 +17,7 @@ namespace RESTful_Api_Exp2.Controllers
     // Controller class inherits from ControllerBase class, it supports the View
     // Controller class is used for Web Mvc and Web Api, ControllerBase support web api only
     [ApiController]
-    [Route(template:"api/companies")]
+    [Route(template: "api/companies")]
     public class CompaniesController : ControllerBase
     {
         // container of services, 容器
@@ -32,7 +32,7 @@ namespace RESTful_Api_Exp2.Controllers
         /// 符合依赖倒置原则，高层模块不应该依赖低层模块，两者都应该依赖其抽象
         /// </summary>
         /// <param name="companyRepository"></param>
-        public CompaniesController(ICompanyRepository companyRepository, IMapper mapper, IEmployeeRepository employeeRepository, 
+        public CompaniesController(ICompanyRepository companyRepository, IMapper mapper, IEmployeeRepository employeeRepository,
             IPropertyMappingService propertyMappingService, IPropertyCheckerService propertyCheckerService)
         {
             //dependency injection           
@@ -46,7 +46,7 @@ namespace RESTful_Api_Exp2.Controllers
         [HttpGet(Name = nameof(GetCompanies))]
         //查询参数，当需要对数据进行各种条件查询时需要参数，以后如果需要查询的参数多了，不需要改这里的代码，只用在CompanyDtoParameters类里添加就行了
         //不指定来源是query的话会被apicontroller默认为是来自于请求的Body里，所以这里要注明不然返回415错误
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies([FromQuery]CompanyDtoParameters parameters)
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies([FromQuery] CompanyDtoParameters parameters)
         {
             var companies = await _companyRepository.GetCompaniesAsync(parameters);
             var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
@@ -76,16 +76,34 @@ namespace RESTful_Api_Exp2.Controllers
             };
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata, new JsonSerializerOptions
-            { 
+            {
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             }));
-            var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
 
-            return Ok(companyDtos.ShapeData(parameters.Fields));
+            var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
+            var shapedData = companyDtos.ShapeData(parameters.Fields);
+            var links = CreateLinksForCompany(parameters);
+            //{value:[xxx], links}
+
+            var shapedCompaniesWithLinks = shapedData.Select(c =>
+            {
+                var companyDict = c as IDictionary<string, object>;
+                var companyLinks = CreateLinksForCompany((Guid)companyDict["Id"], null);
+                companyDict.Add("links", companyLinks);
+                return companyDict;
+            });
+
+            var linkedCollectionResource = new
+            {
+                value = shapedCompaniesWithLinks,
+                links
+            };
+            
+            return Ok(linkedCollectionResource);
         }
 
         [HttpGet(template: "{companyId}", Name = nameof(GetCompany))]
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany(Guid companyId, string fields)
+        public async Task<IActionResult> GetCompany(Guid companyId, string fields)
         {
             if (!_propertyCheckerService.TypeHasProperties<CompanyDto>(fields)) return BadRequest();
             var company = await _companyRepository.GetCompaniesAsync(companyId);
@@ -96,13 +114,16 @@ namespace RESTful_Api_Exp2.Controllers
             //    Id = company.Id,
             //    Name = company.Name
             //});
+            var links = CreateLinksForCompany(companyId, fields);
             var companyDtos = _mapper.Map<CompanyDto>(company);
+            var linkedDict = companyDtos.ShapeData(fields) as IDictionary<string, object>;
 
-            return Ok(companyDtos.ShapeData(fields));
+            linkedDict.Add("links", links);
+            return Ok(linkedDict);
         }
 
         [HttpGet]
-        [Route(template: "{companyId}/{employeeId}")] 
+        [Route(template: "{companyId}/{employeeId}")]
         public async Task<ActionResult<EmployeeDto>> GetEmployeeForCompanyAndId(Guid companyId, Guid employeeId)
         {
             if (!await _companyRepository.CompanyExistAsync(companyId)) return NotFound();
@@ -114,7 +135,7 @@ namespace RESTful_Api_Exp2.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CompanyDto>> CreateCompany([FromBody]CompanyAddDto company)
+        public async Task<ActionResult<CompanyDto>> CreateCompany([FromBody] CompanyAddDto company)
         {
             //.net core 2.0 没有api controller，需要下面这段代码
             if (company == null) return BadRequest();
@@ -124,8 +145,13 @@ namespace RESTful_Api_Exp2.Controllers
             await _companyRepository.SaveAsync();
 
             var returnDto = _mapper.Map<CompanyDto>(entity);
+
+            var links = CreateLinksForCompany(returnDto.Id, null);
+            var linkedDict = returnDto.ShapeData(null) as IDictionary<string, object>;
+            linkedDict.Add("links", links);
+
             //返回响应带地址的header
-            return CreatedAtRoute(nameof(GetCompany), routeValues: new { companyId = returnDto.Id}, value: returnDto);
+            return CreatedAtRoute(nameof(GetCompany), routeValues: new { companyId = linkedDict["Id"] }, value: linkedDict);
         }
 
         [HttpPut(template: "{companyId}")]
@@ -145,9 +171,9 @@ namespace RESTful_Api_Exp2.Controllers
                 var companyAddDto = _mapper.Map<CompanyDto>(companyAddDtoEntity);
                 return CreatedAtRoute(nameof(GetCompany), routeValues: new { companyId = companyId }, value: companyAddDto);
             }
-           _mapper.Map(company, CompanyEntity);
-            
-            
+            _mapper.Map(company, CompanyEntity);
+
+
             _companyRepository.UpdateCompany(CompanyEntity);
             await _companyRepository.SaveAsync();
 
@@ -176,12 +202,12 @@ namespace RESTful_Api_Exp2.Controllers
             //return CreatedAtRoute(nameof(GetCompanies), value: companyDto);
             //带绑定器的返回
             var idsString = string.Join(",", companyDto.Select(x => x.Id));
-            return CreatedAtRoute(nameof(GetCompanyCollection),new { ids = idsString}, companyDto);
+            return CreatedAtRoute(nameof(GetCompanyCollection), new { ids = idsString }, companyDto);
         }
 
         //Key 可以写成 1,2,3 或者 Ke1 = Value1, Key2 = Value2, Key3 = Value3
         [HttpGet(template: "companycollections/{ids}", Name = nameof(GetCompanyCollection))]
-        public async Task<IActionResult> GetCompanyCollection([FromRoute] 
+        public async Task<IActionResult> GetCompanyCollection([FromRoute]
         [ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
             if (ids == null) return BadRequest();
@@ -192,6 +218,19 @@ namespace RESTful_Api_Exp2.Controllers
 
             var dtosToReturn = _mapper.Map<IEnumerable<CompanyDto>>(entities);
             return Ok(dtosToReturn);
+        }
+
+        [HttpDelete("{CompanyId}", Name = nameof(DeleteCompany))]
+        public async Task<IActionResult> DeleteCompany(Guid companyId)
+        {
+            var companyEntity = await _companyRepository.GetCompaniesAsync(companyId);
+            if (companyEntity == null) return NotFound();
+
+            await _employeeRepository.GetEmployeesAsync(companyId, null);
+            _companyRepository.DeleteCompany(companyEntity);
+            await _companyRepository.SaveAsync();
+
+            return NoContent();
         }
 
         //option请求可以获取针对某个webapi的通信选项的信息,不需要异步，不操作数据库
@@ -229,6 +268,7 @@ namespace RESTful_Api_Exp2.Controllers
                         orderBy = parameters.OrderBy
                     });
 
+                case ResourceUriType.CurrentPage:
                 default:
                     return Url.Link(nameof(GetCompaniesWithPage), new
                     {
@@ -240,6 +280,35 @@ namespace RESTful_Api_Exp2.Controllers
                         orderBy = parameters.OrderBy
                     });
             }
+        }
+
+        //HATEOAS级别的传输，先创建一个link
+        private IEnumerable<LinkDto> CreateLinksForCompany(Guid companyId, string fields)
+        {
+            var links = new List<LinkDto>();
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                links.Add(new LinkDto(Url.Link(nameof(GetCompany), new { companyId }), "self", "GET"));
+            }
+            else
+            {
+                links.Add(new LinkDto(Url.Link(nameof(GetCompany), new { companyId, fields }), "self", "GET"));
+            }
+
+            links.Add(new LinkDto(Url.Link(nameof(DeleteCompany), new { companyId }), "delete_company", "DELETE"));
+            links.Add(new LinkDto(Url.Link(nameof(EmployeesController.CreateEmployeeForCompany),new { companyId}), "create_employee_for_company","POST"));
+            links.Add(new LinkDto(Url.Link(nameof(EmployeesController.GetEmployeesWithOrder), new { companyId }), "employee", "GET"));
+
+            return links;
+        }
+
+        private IEnumerable<LinkDto> CreateLinksForCompany(CompanyDtoParameters parameters)
+        {
+            var links = new List<LinkDto>();
+
+            links.Add(new LinkDto(CreateCompaniesResourceUri(parameters, ResourceUriType.CurrentPage), "self", "GET"));
+
+            return links;
         }
     }
 }
