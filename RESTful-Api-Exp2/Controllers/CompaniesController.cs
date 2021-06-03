@@ -62,8 +62,8 @@ namespace RESTful_Api_Exp2.Controllers
 
             if (!_propertyCheckerService.TypeHasProperties<CompanyDto>(parameters.Fields)) return BadRequest();
             var companies = await _companyRepository.GetCompaniesAsyncWithPL(parameters);
-            var previousLink = companies.HasPrevious ? CreateCompaniesResourceUri(parameters, ResourceUriType.PreviousPage) : null;
-            var nextLink = companies.HasNext ? CreateCompaniesResourceUri(parameters, ResourceUriType.NextPage) : null;
+            //var previousLink = companies.HasPrevious ? CreateCompaniesResourceUri(parameters, ResourceUriType.PreviousPage) : null;
+            //var nextLink = companies.HasNext ? CreateCompaniesResourceUri(parameters, ResourceUriType.NextPage) : null;
 
             var paginationMetadata = new
             {
@@ -71,8 +71,8 @@ namespace RESTful_Api_Exp2.Controllers
                 pageSize = companies.PageSize,
                 currentPage = companies.CurrentPage,
                 totalPages = companies.TotalPages,
-                previousLink,
-                nextLink
+                //previousLink,
+                //nextLink
             };
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata, new JsonSerializerOptions
@@ -82,7 +82,7 @@ namespace RESTful_Api_Exp2.Controllers
 
             var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
             var shapedData = companyDtos.ShapeData(parameters.Fields);
-            var links = CreateLinksForCompany(parameters);
+            var links = CreateLinksForCompany(parameters, companies.HasPrevious, companies.HasNext);
             //{value:[xxx], links}
 
             var shapedCompaniesWithLinks = shapedData.Select(c =>
@@ -133,8 +133,8 @@ namespace RESTful_Api_Exp2.Controllers
             var employeeDtos = _mapper.Map<EmployeeDto>(employee);
             return Ok(employeeDtos);
         }
-
-        [HttpPost]
+        //http请求不加Name就获取不到nameof,结果"href": null
+        [HttpPost(Name = nameof(CreateCompany))]
         public async Task<ActionResult<CompanyDto>> CreateCompany([FromBody] CompanyAddDto company)
         {
             //.net core 2.0 没有api controller，需要下面这段代码
@@ -302,11 +302,21 @@ namespace RESTful_Api_Exp2.Controllers
             return links;
         }
 
-        private IEnumerable<LinkDto> CreateLinksForCompany(CompanyDtoParameters parameters)
-        {
+        private IEnumerable<LinkDto> CreateLinksForCompany(CompanyDtoParameters parameters, bool hasPrevious, bool hasNext)
+        {  
             var links = new List<LinkDto>();
 
             links.Add(new LinkDto(CreateCompaniesResourceUri(parameters, ResourceUriType.CurrentPage), "self", "GET"));
+
+            if (hasPrevious)
+            {
+                links.Add(new LinkDto(CreateCompaniesResourceUri(parameters, ResourceUriType.PreviousPage), "previousPage", "GET"));
+            }
+
+            if (hasNext)
+            {
+                links.Add(new LinkDto(CreateCompaniesResourceUri(parameters, ResourceUriType.NextPage), "nextPage", "GET"));
+            }
 
             return links;
         }
