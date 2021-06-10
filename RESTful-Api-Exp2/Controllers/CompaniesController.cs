@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using RESTful_Api_Exp2.DtoParameters;
 using RESTful_Api_Exp2.Entities;
 using RESTful_Api_Exp2.Helpers;
@@ -21,11 +22,11 @@ namespace RESTful_Api_Exp2.Controllers
     public class CompaniesController : ControllerBase
     {
         // container of services, 容器
-        public readonly IEmployeeRepository _employeeRepository;
+        private readonly IEmployeeRepository _employeeRepository;
         private readonly IPropertyMappingService _propertyMappingService;
         private readonly IPropertyCheckerService _propertyCheckerService;
-        public readonly ICompanyRepository _companyRepository;
-        public readonly IMapper _mapper;
+        private readonly ICompanyRepository _companyRepository;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// 依赖注入：容器全权负责组件的装配，它会把符合依赖关系的对象通过构造函数传递给需要的对象。
@@ -103,23 +104,30 @@ namespace RESTful_Api_Exp2.Controllers
         }
 
         [HttpGet(template: "{companyId}", Name = nameof(GetCompany))]
-        public async Task<IActionResult> GetCompany(Guid companyId, string fields)
+        public async Task<IActionResult> GetCompany(Guid companyId, string fields, [FromHeader(Name = "Accept")] string mediaType)
         {
+            if (!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType)) return BadRequest();
+
             if (!_propertyCheckerService.TypeHasProperties<CompanyDto>(fields)) return BadRequest();
             var company = await _companyRepository.GetCompaniesAsync(companyId);
             if (company == null) return NotFound();
-            //var companyDtos = new List<CompanyDto>();
-            //companyDtos.Add(new CompanyDto
-            //{
-            //    Id = company.Id,
-            //    Name = company.Name
-            //});
-            var links = CreateLinksForCompany(companyId, fields);
-            var companyDtos = _mapper.Map<CompanyDto>(company);
-            var linkedDict = companyDtos.ShapeData(fields) as IDictionary<string, object>;
 
-            linkedDict.Add("links", links);
-            return Ok(linkedDict);
+            if (parsedMediaType.MediaType == "application/vnd.company.hateoas+json")
+            {
+                //var companyDtos = new List<CompanyDto>();
+                //companyDtos.Add(new CompanyDto
+                //{
+                //    Id = company.Id,
+                //    Name = company.Name
+                //});
+                var links = CreateLinksForCompany(companyId, fields);
+                var companyDtos = _mapper.Map<CompanyDto>(company);
+                var linkedDict = companyDtos.ShapeData(fields) as IDictionary<string, object>;
+
+                linkedDict.Add("links", links);
+                return Ok(linkedDict);
+            }
+            return Ok(_mapper.Map<CompanyDto>(company).ShapeData(fields));
         }
 
         [HttpGet]

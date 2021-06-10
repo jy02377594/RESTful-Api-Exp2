@@ -14,6 +14,7 @@ using RESTful_Api_Exp2.Data;
 using RESTful_Api_Exp2.Services;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace RESTful_Api_Exp2
 {
@@ -29,6 +30,7 @@ namespace RESTful_Api_Exp2
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCaching();
             //services.AddMvc();// 服务太多了不需要
             services.AddControllers(configure: setup =>
             {
@@ -59,6 +61,17 @@ namespace RESTful_Api_Exp2
                         ContentTypes = { "application/problem+json" }
                     };
                 };
+            });
+
+            // formatter for content types 'application/vnd.company.hateoas+json'
+            services.Configure<MvcOptions>(config =>
+            {
+                var newtonSoftJsonOutputFormatter = config.OutputFormatters.OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
+
+                if (newtonSoftJsonOutputFormatter != null)
+                {
+                    newtonSoftJsonOutputFormatter?.SupportedMediaTypes.Add("application/vnd.company.hateoas+json");
+                }
             });
 
             //添加对象映射器, Add AutoMapper
@@ -117,6 +130,8 @@ namespace RESTful_Api_Exp2
                     });
                 });
             }
+            //注册cache
+            app.UseResponseCaching();
 
             //设置起始页 Configure the app to serve static files and enable default file mapping.
             app.UseDefaultFiles();

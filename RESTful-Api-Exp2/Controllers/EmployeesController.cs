@@ -119,6 +119,7 @@ namespace RESTful_Api_Exp2.Controllers
         //直接加companyId会和上面的[HttpGet(template: "{employeeId}")]冲突
         //[HttpHead], head跟get的区别就是不传响应的body
         [HttpGet]
+        [ResponseCache(Duration = 120)]
         [Route(template: "company/{companyId}", Name = nameof(GetEmployeesForCompany))]
         //gender没有来自route，所以只能来自query,用来过滤, (Name = "gender") 可以不加，加了代表请求的时候指定query参数名, q表示搜索，查询
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId, [FromQuery(Name = "gender")] string genderDisplay, string q)

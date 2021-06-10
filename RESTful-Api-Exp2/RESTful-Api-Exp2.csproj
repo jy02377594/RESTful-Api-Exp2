@@ -3,13 +3,19 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>RESTful_Api_Exp2</RootNamespace>
+    <UserSecretsId>9cd63ae2-af8b-4c92-9efe-9b361a404947</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AngularExp\**" />
     <Compile Remove="wwwroot\angular-1.8.2\**" />
+    <Content Remove="AngularExp\**" />
     <Content Remove="wwwroot\angular-1.8.2\**" />
+    <EmbeddedResource Remove="AngularExp\**" />
     <EmbeddedResource Remove="wwwroot\angular-1.8.2\**" />
+    <None Remove="AngularExp\**" />
     <None Remove="wwwroot\angular-1.8.2\**" />
+    <TypeScriptCompile Remove="AngularExp\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,7 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="AngularExp\" />
     <Folder Include="EmployeePhoto\" />
   </ItemGroup>
 
